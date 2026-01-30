@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  SUCCESS
+  FAILED
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password_hash String
+  first_name    String
+  last_name     String
+  role          Role      @default(CUSTOMER)
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+  
+  orders        Order[]
+  // reviews    Review[]
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String
+  slug      String    @unique
+  parent_id Int?
+  parent    Category? @relation("CategoryHierarchy", fields: [parent_id], references: [id])
+  children  Category[] @relation("CategoryHierarchy")
+  
+  products  Product[]
+}
+
+model Product {
+  id             String      @id @default(uuid())
+  name           String
+  description    String?
+  price          Decimal     @db.Decimal(10, 2)
+  stock_quantity Int         @default(0)
+  sku            String      @unique
+  category_id    Int?
+  category       Category?   @relation(fields: [category_id], references: [id])
+  created_at     DateTime    @default(now())
+  updated_at     DateTime    @updatedAt
+  
+  order_items    OrderItem[]
+}
+
+model Order {
+  id               String      @id @default(uuid())
+  user_id          String
+  user             User        @relation(fields: [user_id], references: [id])
+  total_amount     Decimal     @db.Decimal(10, 2)
+  status           OrderStatus @default(PENDING)
+  shipping_address String
+  created_at       DateTime    @default(now())
+  updated_at       DateTime    @updatedAt
+  
+  order_items      OrderItem[]
+  payments         Payment[]
+}
+
+model OrderItem {
+  id         String  @id @default(uuid())
+  order_id   String
+  order      Order   @relation(fields: [order_id], references: [id])
+  product_id String
+  product    Product @relation(fields: [product_id], references: [id])
+  quantity   Int
+  unit_price Decimal @db.Decimal(10, 2)
+}
+
+model Payment {
+  id             String        @id @default(uuid())
+  order_id       String
+  order          Order         @relation(fields: [order_id], references: [id])
+  provider       String        // STRIPE, PAYPAL
+  transaction_id String
+  amount         Decimal       @db.Decimal(10, 2)
+  status         PaymentStatus @default(SUCCESS)
+  created_at     DateTime      @default(now())
+}

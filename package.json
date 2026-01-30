@@ -1,0 +1,19 @@
+{
+  "name": "ecommerce-platform-mvp",
+  "version": "0.0.1",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test"
+  },
+  "devDependencies": {
+    "turbo": "^1.11.3",
+    "prettier": "^3.2.4"
+  },
+  "packageManager": "npm@10.2.0"
+}

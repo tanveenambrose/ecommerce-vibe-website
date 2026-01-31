@@ -40,14 +40,13 @@ export function ProductCard({ product }: { product: Product }) {
 
                 {/* Badges */}
                 <div className="absolute top-3 left-3 flex flex-col gap-2">
-                    {product.originalPrice && (
-                        <div className="bg-red-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
-                            SALE
-                        </div>
-                    )}
-                    {!product.inStock && (
+                    {!product.inStock ? (
                         <div className="bg-gray-800 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
                             OUT OF STOCK
+                        </div>
+                    ) : product.originalPrice && (
+                        <div className="bg-red-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
+                            SALE
                         </div>
                     )}
                 </div>

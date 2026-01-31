@@ -1,91 +1,91 @@
 // Comprehensive product database with 40+ products per subcategory
 export interface Product {
-    id: string;
-    name: string;
-    category: string;
-    subcategory: string;
-    price: number;
-    originalPrice?: number;
-    image: string;
-    rating: number;
-    reviews: number;
-    inStock: boolean;
-    description: string;
-    features: string[];
-    brand?: string;
+  id: string;
+  name: string;
+  category: string;
+  subcategory: string;
+  price: number;
+  originalPrice?: number;
+  image: string;
+  rating?: number;
+  reviews?: number;
+  inStock?: boolean;
+  description?: string;
+  features?: string[];
+  brand?: string;
 }
 
 // Product templates for generating variations
 const brands = {
-    electronics: ['Apple', 'Samsung', 'Sony', 'LG', 'Dell', 'HP', 'Lenovo', 'ASUS', 'Acer', 'Microsoft', 'Razer', 'MSI', 'Alienware', 'Gigabyte', 'Huawei', 'Xiaomi'],
-    fashion: ['Nike', 'Adidas', 'Zara', 'H&M', 'Gucci', 'Prada', 'Levi\'s', 'Calvin Klein', 'Tommy Hilfiger', 'Ralph Lauren'],
-    home: ['IKEA', 'West Elm', 'Pottery Barn', 'Crate & Barrel', 'Ashley', 'Wayfair', 'CB2', 'Article'],
-    beauty: ['L\'Oreal', 'Maybelline', 'MAC', 'Clinique', 'Estee Lauder', 'Neutrogena', 'CeraVe', 'The Ordinary'],
-    hobby: ['LEGO', 'Hasbro', 'Mattel', 'Fisher-Price', 'Melissa & Doug', 'VTech', 'Little Tikes']
+  electronics: ['Apple', 'Samsung', 'Sony', 'LG', 'Dell', 'HP', 'Lenovo', 'ASUS', 'Acer', 'Microsoft', 'Razer', 'MSI', 'Alienware', 'Gigabyte', 'Huawei', 'Xiaomi'],
+  fashion: ['Nike', 'Adidas', 'Zara', 'H&M', 'Gucci', 'Prada', 'Levi\'s', 'Calvin Klein', 'Tommy Hilfiger', 'Ralph Lauren'],
+  home: ['IKEA', 'West Elm', 'Pottery Barn', 'Crate & Barrel', 'Ashley', 'Wayfair', 'CB2', 'Article'],
+  beauty: ['L\'Oreal', 'Maybelline', 'MAC', 'Clinique', 'Estee Lauder', 'Neutrogena', 'CeraVe', 'The Ordinary'],
+  hobby: ['LEGO', 'Hasbro', 'Mattel', 'Fisher-Price', 'Melissa & Doug', 'VTech', 'Little Tikes']
 };
 
 export interface BrandGroup {
-    name: string;
-    brands: string[];
+  name: string;
+  brands: string[];
 }
 
 export const subCategoryBrands: Record<string, BrandGroup[]> = {
-    'Computers & Laptops': [
-        { name: 'Premium & General', brands: ['Apple', 'Dell', 'HP', 'Lenovo', 'ASUS', 'Microsoft Surface', 'Samsung'] },
-        { name: 'Gaming', brands: ['MSI', 'Razer', 'Acer', 'Alienware', 'Gigabyte'] },
-        { name: 'Value', brands: ['Huawei', 'Xiaomi', 'Walton', 'Chuwi'] }
-    ],
-    'Mobile & Tablets': [
-        { name: 'Flagship & Premium', brands: ['Apple', 'Samsung', 'Google', 'Sony', 'OnePlus'] },
-        { name: 'Value & Budget', brands: ['Xiaomi', 'Realme', 'Oppo', 'Vivo', 'Motorola', 'Nokia'] }
-    ],
-    'Audio & Sound': [
-        { name: 'Premium Audio', brands: ['Sony', 'Bose', 'Sennheiser', 'Bang & Olufsen', 'JBL'] },
-        { name: 'Consumer', brands: ['Beats', 'Anker', 'Skullcandy', 'Logitech', 'Creative'] }
-    ],
-    'Wearable Tech': [
-        { name: 'Smartwatches', brands: ['Apple', 'Samsung', 'Garmin', 'Fitbit', 'Amazfit'] },
-        { name: 'Accessories', brands: ['Oura', 'Whoop', 'Withings', 'Fossil'] }
-    ],
-    'Cameras & Gear': [
-        { name: 'Professional', brands: ['Canon', 'Nikon', 'Sony', 'Fujifilm', 'Leica'] },
-        { name: 'Action & Drones', brands: ['GoPro', 'DJI', 'Insta360', 'Polaroid'] }
-    ],
-    "Men's Clothing": [
-        { name: 'Luxury', brands: ['Gucci', 'Prada', 'Ralph Lauren', 'Tommy Hilfiger'] },
-        { name: 'Casual & Sport', brands: ['Nike', 'Adidas', 'Zara', 'H&M', 'Levi\'s', 'Uniqlo'] }
-    ],
-    "Women's Clothing": [
-        { name: 'Luxury', brands: ['Chanel', 'Louis Vuitton', 'Dior', 'Versace'] },
-        { name: 'Trendy', brands: ['Zara', 'H&M', 'Forever 21', 'Mango', 'Shein'] }
-    ],
-    'Footwear': [
-        { name: 'Sportswear', brands: ['Nike', 'Adidas', 'Puma', 'New Balance', 'Reebok'] },
-        { name: 'Casual & Formal', brands: ['Timberland', 'Dr. Martens', 'Clarks', 'Vans', 'Converse'] }
-    ],
-    'Accessories': [
-        { name: 'Watches', brands: ['Rolex', 'Seiko', 'Casio', 'Fossil', 'Timex'] },
-        { name: 'Eyewear & Bags', brands: ['Ray-Ban', 'Oakley', 'Herschel', 'Samsonite'] }
-    ],
-    'Furniture': [
-        { name: 'Modern', brands: ['IKEA', 'West Elm', 'CB2', 'Article'] },
-        { name: 'Traditional', brands: ['Ashley', 'Pottery Barn', 'Restoration Hardware'] }
-    ],
-    'Decor': [
-        { name: 'Home Accents', brands: ['West Elm', 'Crate & Barrel', 'Anthropologie', 'Urban Outfitters'] }
-    ],
-    'Kitchen': [
-        { name: 'Appliances', brands: ['KitchenAid', 'Cuisinart', 'Ninja', 'Instant Pot', 'Dyson'] },
-        { name: 'Cookware', brands: ['Le Creuset', 'All-Clad', 'Calphalon', 'T-fal'] }
-    ],
-    'Skincare': [
-        { name: 'Dermatological', brands: ['CeraVe', 'Neutrogena', 'La Roche-Posay', 'The Ordinary'] },
-        { name: 'Luxury', brands: ['La Mer', 'Estee Lauder', 'Lancome', 'Clinique'] }
-    ],
-    'Makeup': [
-        { name: 'Professional', brands: ['MAC', 'Sephora', 'NARS', 'Urban Decay'] },
-        { name: 'Drugstore', brands: ['Maybelline', 'L\'Oreal', 'NYX', 'Revlon'] }
-    ]
+  'Computers & Laptops': [
+    { name: 'Premium & General', brands: ['Apple', 'Dell', 'HP', 'Lenovo', 'ASUS', 'Microsoft Surface', 'Samsung'] },
+    { name: 'Gaming', brands: ['MSI', 'Razer', 'Acer', 'Alienware', 'Gigabyte'] },
+    { name: 'Value', brands: ['Huawei', 'Xiaomi', 'Walton', 'Chuwi'] }
+  ],
+  'Mobile & Tablets': [
+    { name: 'Flagship & Premium', brands: ['Apple', 'Samsung', 'Google', 'Sony', 'OnePlus'] },
+    { name: 'Value & Budget', brands: ['Xiaomi', 'Realme', 'Oppo', 'Vivo', 'Motorola', 'Nokia'] }
+  ],
+  'Audio & Sound': [
+    { name: 'Premium Audio', brands: ['Sony', 'Bose', 'Sennheiser', 'Bang & Olufsen', 'JBL'] },
+    { name: 'Consumer', brands: ['Beats', 'Anker', 'Skullcandy', 'Logitech', 'Creative'] }
+  ],
+  'Wearable Tech': [
+    { name: 'Smartwatches', brands: ['Apple', 'Samsung', 'Garmin', 'Fitbit', 'Amazfit'] },
+    { name: 'Accessories', brands: ['Oura', 'Whoop', 'Withings', 'Fossil'] }
+  ],
+  'Cameras & Gear': [
+    { name: 'Professional', brands: ['Canon', 'Nikon', 'Sony', 'Fujifilm', 'Leica'] },
+    { name: 'Action & Drones', brands: ['GoPro', 'DJI', 'Insta360', 'Polaroid'] }
+  ],
+  "Men's Clothing": [
+    { name: 'Luxury', brands: ['Gucci', 'Prada', 'Ralph Lauren', 'Tommy Hilfiger'] },
+    { name: 'Casual & Sport', brands: ['Nike', 'Adidas', 'Zara', 'H&M', 'Levi\'s', 'Uniqlo'] }
+  ],
+  "Women's Clothing": [
+    { name: 'Luxury', brands: ['Chanel', 'Louis Vuitton', 'Dior', 'Versace'] },
+    { name: 'Trendy', brands: ['Zara', 'H&M', 'Forever 21', 'Mango', 'Shein'] }
+  ],
+  'Footwear': [
+    { name: 'Sportswear', brands: ['Nike', 'Adidas', 'Puma', 'New Balance', 'Reebok'] },
+    { name: 'Casual & Formal', brands: ['Timberland', 'Dr. Martens', 'Clarks', 'Vans', 'Converse'] }
+  ],
+  'Accessories': [
+    { name: 'Watches', brands: ['Rolex', 'Seiko', 'Casio', 'Fossil', 'Timex'] },
+    { name: 'Eyewear & Bags', brands: ['Ray-Ban', 'Oakley', 'Herschel', 'Samsonite'] }
+  ],
+  'Furniture': [
+    { name: 'Modern', brands: ['IKEA', 'West Elm', 'CB2', 'Article'] },
+    { name: 'Traditional', brands: ['Ashley', 'Pottery Barn', 'Restoration Hardware'] }
+  ],
+  'Decor': [
+    { name: 'Home Accents', brands: ['West Elm', 'Crate & Barrel', 'Anthropologie', 'Urban Outfitters'] }
+  ],
+  'Kitchen': [
+    { name: 'Appliances', brands: ['KitchenAid', 'Cuisinart', 'Ninja', 'Instant Pot', 'Dyson'] },
+    { name: 'Cookware', brands: ['Le Creuset', 'All-Clad', 'Calphalon', 'T-fal'] }
+  ],
+  'Skincare': [
+    { name: 'Dermatological', brands: ['CeraVe', 'Neutrogena', 'La Roche-Posay', 'The Ordinary'] },
+    { name: 'Luxury', brands: ['La Mer', 'Estee Lauder', 'Lancome', 'Clinique'] }
+  ],
+  'Makeup': [
+    { name: 'Professional', brands: ['MAC', 'Sephora', 'NARS', 'Urban Decay'] },
+    { name: 'Drugstore', brands: ['Maybelline', 'L\'Oreal', 'NYX', 'Revlon'] }
+  ]
 };
 
 // Real product data fetched from public APIs
@@ -5877,53 +5877,53 @@ export const products: Product[] = [
 
 // Helper functions
 export function getProductsByCategory(category: string): Product[] {
-    const categoryName = category.replace(/-/g, ' ').replace(/and/g, '&');
-    return products.filter(p =>
-        p.category.toLowerCase() === categoryName.toLowerCase()
-    );
+  const categoryName = category.replace(/-/g, ' ').replace(/and/g, '&');
+  return products.filter(p =>
+    p.category.toLowerCase() === categoryName.toLowerCase()
+  );
 }
 
 export function getProductsBySubcategory(category: string, subcategory: string): Product[] {
-    const categoryName = category.replace(/-/g, ' ').replace(/and/g, '&');
-    const subcategoryName = subcategory.replace(/-/g, ' ').replace(/and/g, '&');
-    return products.filter(p =>
-        p.category.toLowerCase() === categoryName.toLowerCase() &&
-        p.subcategory.toLowerCase() === subcategoryName.toLowerCase()
-    );
+  const categoryName = category.replace(/-/g, ' ').replace(/and/g, '&');
+  const subcategoryName = subcategory.replace(/-/g, ' ').replace(/and/g, '&');
+  return products.filter(p =>
+    p.category.toLowerCase() === categoryName.toLowerCase() &&
+    p.subcategory.toLowerCase() === subcategoryName.toLowerCase()
+  );
 }
 
 export function getProductById(id: string): Product | undefined {
-    return products.find(p => p.id === id);
+  return products.find(p => p.id === id);
 }
 
 export function getAllCategories(): string[] {
-    const categories = new Set<string>();
-    products.forEach(p => categories.add(p.category));
-    return Array.from(categories);
+  const categories = new Set<string>();
+  products.forEach(p => categories.add(p.category));
+  return Array.from(categories);
 }
 
 // Get total product count
 export function getTotalProductCount(): number {
-    return products.length;
+  return products.length;
 }
 
 // Get product count by category
 export function getProductCountByCategory(): Record<string, number> {
-    const counts: Record<string, number> = {};
-    products.forEach(p => {
-        counts[p.category] = (counts[p.category] || 0) + 1;
-    });
-    return counts;
+  const counts: Record<string, number> = {};
+  products.forEach(p => {
+    counts[p.category] = (counts[p.category] || 0) + 1;
+  });
+  return counts;
 }
 
 // Get product count by subcategory  
 export function getProductCountBySubcategory(): Record<string, Record<string, number>> {
-    const counts: Record<string, Record<string, number>> = {};
-    products.forEach(p => {
-        if (!counts[p.category]) {
-            counts[p.category] = {};
-        }
-        counts[p.category][p.subcategory] = (counts[p.category][p.subcategory] || 0) + 1;
-    });
-    return counts;
+  const counts: Record<string, Record<string, number>> = {};
+  products.forEach(p => {
+    if (!counts[p.category]) {
+      counts[p.category] = {};
+    }
+    counts[p.category][p.subcategory] = (counts[p.category][p.subcategory] || 0) + 1;
+  });
+  return counts;
 }

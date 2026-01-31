@@ -18,54 +18,54 @@ export function ProductCard({ product }: { product: Product }) {
     };
 
     return (
-        <Link href={`/product/${product.id}`} className="group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 block">
-            {/* Image Container */}
-            <div className="relative h-64 bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
+        <Link href={`/product/${product.id}`} className="group relative bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-200 block">
+            {/* Image Container - Better aspect ratio for mobile */}
+            <div className="relative h-56 sm:h-64 md:h-72 bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
                 <img
                     src={product.image}
                     alt={product.name}
-                    className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
 
-                {/* Wishlist Button */}
+                {/* Wishlist Button - Larger for mobile */}
                 <button
-                    className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white hover:scale-110 z-10"
+                    className="absolute top-3 right-3 p-2.5 sm:p-2 bg-white/95 backdrop-blur-sm rounded-full opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white hover:scale-110 z-10 shadow-lg"
                     onClick={(e) => {
                         e.preventDefault();
                         // Wishlist logic here
                     }}
                 >
-                    <Heart className="h-5 w-5 text-gray-700 hover:text-red-500 hover:fill-red-500 transition-colors" />
+                    <Heart className="h-6 w-6 sm:h-5 sm:w-5 text-gray-700 hover:text-red-500 hover:fill-red-500 transition-colors" />
                 </button>
 
                 {/* Badges */}
                 <div className="absolute top-3 left-3 flex flex-col gap-2">
                     {product.originalPrice && (
-                        <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+                        <div className="bg-red-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
                             SALE
                         </div>
                     )}
                     {!product.inStock && (
-                        <div className="bg-gray-800 text-white px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+                        <div className="bg-gray-800 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
                             OUT OF STOCK
                         </div>
                     )}
                 </div>
             </div>
 
-            {/* Content */}
-            <div className="p-5">
-                <div className="mb-2">
+            {/* Content - Better spacing */}
+            <div className="p-4 sm:p-5 space-y-3">
+                <div>
                     <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider">{product.subcategory}</span>
                 </div>
-                <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors h-14">
+                <h3 className="font-semibold text-base sm:text-lg text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors min-h-[3rem]">
                     {product.name}
                 </h3>
 
-                <div className="flex items-center justify-between mb-4">
-                    <div className="flex flex-col">
-                        <div className="flex items-center gap-2">
-                            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <div className="flex items-start sm:items-center justify-between gap-3 flex-col sm:flex-row">
+                    <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                                 ${product.price.toFixed(2)}
                             </span>
                             {product.originalPrice && (
@@ -77,17 +77,19 @@ export function ProductCard({ product }: { product: Product }) {
                         <span className="text-xs text-gray-500">Free shipping</span>
                     </div>
 
-                    <div className="flex items-center gap-1 text-yellow-500">
-                        <span className="text-sm font-medium">{product.rating}</span>
-                        <StarIcon className="w-4 h-4 fill-current" />
-                    </div>
+                    {product.rating && (
+                        <div className="flex items-center gap-1.5 text-yellow-500">
+                            <StarIcon className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
+                            <span className="text-sm font-semibold">{product.rating}</span>
+                        </div>
+                    )}
                 </div>
 
-                {/* Add to Cart Button */}
+                {/* Add to Cart Button - Larger tap target */}
                 <button
                     onClick={handleAddToCart}
                     disabled={!product.inStock}
-                    className={`w-full py-3 rounded-xl flex items-center justify-center gap-2 font-medium transition-all duration-300 transform active:scale-[0.98] shadow-lg hover:shadow-xl z-20 relative
+                    className={`w-full py-3.5 sm:py-3 rounded-xl flex items-center justify-center gap-2 font-semibold text-sm sm:text-base transition-all duration-300 transform active:scale-[0.96] shadow-lg hover:shadow-xl z-20 relative mt-4
                         ${isAdded
                             ? 'bg-green-600 text-white scale-95'
                             : product.inStock

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { Search, ShoppingCart, Menu, X, User, LogOut, UserCircle, ChevronDown, Laptop, Shirt, Home, Sparkles, Baby, Grid3x3 } from 'lucide-react';
+import { Search, ShoppingCart, Menu, X, User, LogOut, UserCircle, ChevronDown, Laptop, Shirt, Home, Sparkles, Baby, Grid3x3, Package } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import { useCart } from '@/lib/cart-context';
 
@@ -185,6 +185,15 @@ export function Navbar() {
                                     </div>
                                 )}
                             </div>
+                        )}
+
+                        {/* Orders Icon - Only show when authenticated */}
+                        {isAuthenticated && (
+                            <Link href="/orders" className="relative">
+                                <div className="relative p-2 hover:bg-gray-100 rounded-full transition-colors group">
+                                    <Package className="h-6 w-6 text-gray-700 group-hover:text-blue-600 transition-colors" />
+                                </div>
+                            </Link>
                         )}
 
                         {/* Cart Icon with Badge */}

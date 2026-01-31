@@ -9,7 +9,7 @@ import { Mail, Lock, ArrowRight, ShoppingBag } from 'lucide-react';
 
 export default function LoginPage() {
     const router = useRouter();
-    const { setUser } = useAuth();
+    const { login } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -23,15 +23,13 @@ export default function LoginPage() {
         try {
             const response = await api.post('/auth/login', { email, password });
 
-            //Store token in localStorage
-            localStorage.setItem('access_token', response.data.access_token);
-            localStorage.setItem('user', JSON.stringify(response.data.user));
+            // Use login method to update context and localStorage
+            login(response.data.access_token, response.data.user);
 
-            // Update auth context
-            setUser(response.data.user);
-
-            // Redirect to home page
-            router.push('/');
+            // Redirect to home page (or previous page)
+            const params = new URLSearchParams(window.location.search);
+            const redirect = params.get('redirect') || '/';
+            router.push(redirect);
         } catch (err: any) {
             console.error('Login failed', err);
             setError(err.response?.data?.message || 'Invalid credentials. Please try again.');

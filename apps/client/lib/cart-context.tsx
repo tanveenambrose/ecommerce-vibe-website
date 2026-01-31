@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Product } from './products-data';
+import { useAuth } from './auth-context';
 
 export interface CartItem {
     product: Product;
@@ -23,26 +24,45 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: React.ReactNode }) {
     const [items, setItems] = useState<CartItem[]>([]);
     const [isLoaded, setIsLoaded] = useState(false);
+    const auth = useAuth();
 
-    // Load cart from localStorage on mount
+    // Get user-specific cart key
+    const getCartKey = () => {
+        if (auth.user?.id) {
+            return `shopping-cart-${auth.user.id}`;
+        }
+        return 'shopping-cart-guest';
+    };
+
+    // Load cart from localStorage when user changes
     useEffect(() => {
-        const savedCart = localStorage.getItem('shopping-cart');
+        const cartKey = getCartKey();
+        const savedCart = localStorage.getItem(cartKey);
+
         if (savedCart) {
             try {
                 setItems(JSON.parse(savedCart));
             } catch (error) {
                 console.error('Error loading cart from localStorage:', error);
+                setItems([]);
             }
+        } else {
+            setItems([]);
         }
         setIsLoaded(true);
-    }, []);
+    }, [auth.user?.id]); // Reload cart when user changes
 
     // Save cart to localStorage whenever it changes
     useEffect(() => {
         if (isLoaded) {
-            localStorage.setItem('shopping-cart', JSON.stringify(items));
+            const cartKey = getCartKey();
+            if (items.length > 0) {
+                localStorage.setItem(cartKey, JSON.stringify(items));
+            } else {
+                localStorage.removeItem(cartKey);
+            }
         }
-    }, [items, isLoaded]);
+    }, [items, isLoaded, auth.user?.id]);
 
     const addToCart = (product: Product, quantity: number = 1) => {
         setItems(prevItems => {

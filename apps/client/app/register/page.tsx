@@ -9,7 +9,7 @@ import { Mail, Lock, User, ArrowRight, CheckCircle, ShieldCheck } from 'lucide-r
 
 export default function RegisterPage() {
     const router = useRouter();
-    const { setUser } = useAuth();
+    const { login, setUser } = useAuth();
     const [step, setStep] = useState<'form' | 'otp'>('form'); // Two steps: form and OTP
     const [formData, setFormData] = useState({
         email: '',
@@ -78,12 +78,17 @@ export default function RegisterPage() {
                 otp: otpCode,
             });
 
-            // Store token in localStorage
-            localStorage.setItem('access_token', response.data.access_token);
-            localStorage.setItem('user', JSON.stringify(response.data.user));
+            // Register successful
+            console.log('Registration successful', response.data);
 
-            // Update auth context
-            setUser(response.data.user);
+            // Log in user automatically if token is present
+            if (response.data.access_token && response.data.user) {
+                // Use login method to update context and localStorage
+                login(response.data.access_token, response.data.user);
+            } else {
+                // Fallback for just updating user if no token returned (unlikely for verified registration)
+                setUser(response.data.user);
+            }
 
             // Redirect to home page
             router.push('/');

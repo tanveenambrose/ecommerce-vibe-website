@@ -144,7 +144,7 @@ export default function CategoryPage() {
                             </div>
 
                             {/* Brand Filter */}
-                            {matchedBrandGroups && (
+                            {matchedBrandGroups && matchedBrandGroups.length > 0 && (
                                 <div className="mb-6 border-t border-gray-100 pt-6">
                                     <h3 className="text-sm font-medium text-gray-900 mb-4">Brands</h3>
 
@@ -153,7 +153,7 @@ export default function CategoryPage() {
                                             <div key={group.name}>
                                                 <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{group.name}</p>
                                                 <div className="space-y-2">
-                                                    {group.brands.map((brand) => (
+                                                    {(group.brands || []).map((brand) => (
                                                         <label key={brand} className="flex items-center gap-2 cursor-pointer group">
                                                             <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${selectedBrands.includes(brand) ? 'bg-blue-600 border-blue-600' : 'border-gray-300 group-hover:border-blue-400'}`}>
                                                                 {selectedBrands.includes(brand) && <Check className="h-3 w-3 text-white" />}
@@ -282,7 +282,7 @@ export default function CategoryPage() {
                                                 {/* Features */}
                                                 <div className="mb-4 flex-1">
                                                     <ul className="space-y-1">
-                                                        {product.features.slice(0, 3).map((feature, idx) => (
+                                                        {(product.features || []).slice(0, 3).map((feature, idx) => (
                                                             <li key={idx} className="text-xs text-gray-600 flex items-start gap-1">
                                                                 <span className="text-blue-600 mt-0.5">•</span>
                                                                 <span>{feature}</span>

@@ -15,9 +15,48 @@ export default function Home() {
     <main className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
       {/* Hero Section with Typing Effect */}
       <section className="relative overflow-hidden">
-        {/* Animated RGB Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 animate-gradient-x"></div>
-        <div className="absolute inset-0 bg-black/10"></div>
+        {/* 3D Animated Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 overflow-hidden">
+          {/* Floating 3D Shapes */}
+          <div className="absolute inset-0" style={{ perspective: '1000px' }}>
+            {/* Large Cube */}
+            <div className="absolute top-20 left-10 w-64 h-64 animate-float-slow" style={{ transformStyle: 'preserve-3d' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-400/60 to-purple-500/60 backdrop-blur-md rounded-3xl transform rotate-12 animate-rotate-3d shadow-2xl shadow-blue-500/50 border-2 border-white/30"></div>
+            </div>
+
+            {/* Medium Sphere */}
+            <div className="absolute top-40 right-20 w-56 h-56 animate-float-medium">
+              <div className="absolute inset-0 bg-gradient-to-br from-pink-400/70 to-rose-500/70 backdrop-blur-lg rounded-full animate-pulse-slow shadow-2xl shadow-pink-500/50 border-4 border-white/40"></div>
+            </div>
+
+            {/* Small Pyramid */}
+            <div className="absolute bottom-32 left-1/4 w-48 h-48 animate-float-fast" style={{ transformStyle: 'preserve-3d' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/70 to-emerald-500/70 backdrop-blur-md transform rotate-45 animate-rotate-3d-reverse shadow-2xl shadow-cyan-500/50 border-2 border-white/40" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}></div>
+            </div>
+
+            {/* Large Ring */}
+            <div className="absolute top-1/2 right-1/4 w-72 h-72 animate-float-slow">
+              <div className="absolute inset-0 border-[16px] border-yellow-400/70 backdrop-blur-sm rounded-full animate-spin-slow shadow-2xl shadow-yellow-500/50"></div>
+            </div>
+
+            {/* Small Cubes scattered */}
+            <div className="absolute top-1/3 left-1/3 w-40 h-40 animate-float-medium" style={{ transformStyle: 'preserve-3d' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-green-400/70 to-teal-500/70 backdrop-blur-md rounded-2xl transform -rotate-12 animate-rotate-3d shadow-2xl shadow-green-500/50 border-2 border-white/30"></div>
+            </div>
+
+            <div className="absolute bottom-1/4 right-1/3 w-32 h-32 animate-float-fast">
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-400/70 to-pink-500/70 backdrop-blur-md rounded-2xl animate-pulse-slow shadow-2xl shadow-orange-500/50 border-2 border-white/30"></div>
+            </div>
+
+            {/* Particle effects */}
+            <div className="absolute top-1/4 left-1/2 w-6 h-6 bg-white/90 rounded-full animate-float-particle shadow-lg shadow-white/70"></div>
+            <div className="absolute top-2/3 left-1/4 w-5 h-5 bg-cyan-300/90 rounded-full animate-float-particle-slow shadow-lg shadow-cyan-300/70"></div>
+            <div className="absolute top-1/2 right-1/3 w-5 h-5 bg-pink-300/90 rounded-full animate-float-particle shadow-lg shadow-pink-300/70"></div>
+            <div className="absolute top-3/4 left-2/3 w-4 h-4 bg-yellow-300/90 rounded-full animate-float-particle-slow shadow-lg shadow-yellow-300/70"></div>
+            <div className="absolute top-1/3 right-1/2 w-6 h-6 bg-purple-300/90 rounded-full animate-float-particle shadow-lg shadow-purple-300/70"></div>
+          </div>
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/5 to-black/20"></div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
           <div className="text-center">

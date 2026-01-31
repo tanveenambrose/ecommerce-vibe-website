@@ -37,3 +37,7 @@ next-env.d.ts
 
 # Turbo
 .turbo
+
+# Development Scripts
+scripts/
+fetched_products.json

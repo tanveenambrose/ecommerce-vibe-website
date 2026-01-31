@@ -1,35 +1,89 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCart } from '@/lib/cart-context';
+import { useAuth } from '@/lib/auth-context';
 import { useRouter } from 'next/navigation';
 import { Lock, CreditCard, Wallet, Truck, CheckCircle, ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
+import axios from '@/lib/axios';
 
 export default function CheckoutPage() {
     const { items, totalPrice, clearCart } = useCart();
+    const { token, isAuthenticated } = useAuth();
     const router = useRouter();
 
     const [isProcessing, setIsProcessing] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [orderNumber, setOrderNumber] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('card');
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        address: '',
+        city: '',
+        postalCode: '',
+        country: 'United States',
+        phone: '',
+    });
+
+    // Redirect to login if not authenticated
+    useEffect(() => {
+        if (!isAuthenticated) {
+            router.push('/login?redirect=/checkout');
+        }
+    }, [isAuthenticated, router]);
 
     const subtotal = totalPrice;
     const tax = subtotal * 0.08;
     const shipping = subtotal > 100 ? 0 : 15;
     const total = subtotal + tax + shipping;
 
-    const handlePlaceOrder = (e: React.FormEvent) => {
+    const handlePlaceOrder = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsProcessing(true);
 
-        // Simulate API call
-        setTimeout(() => {
-            setIsProcessing(false);
+        try {
+            // Prepare order data
+            const orderData = {
+                items: items.map(item => ({
+                    productId: item.product.id,
+                    name: item.product.name,
+                    price: item.product.price,
+                    quantity: item.quantity,
+                    image: item.product.image,
+                })),
+                subtotal,
+                tax,
+                shipping,
+                total,
+                shippingAddress: {
+                    fullName: `${formData.firstName} ${formData.lastName}`,
+                    address: formData.address,
+                    city: formData.city,
+                    postalCode: formData.postalCode,
+                    country: formData.country,
+                    phone: formData.phone,
+                },
+                paymentMethod,
+            };
+
+            // Send order to backend
+            const response = await axios.post('/orders', orderData, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            setOrderNumber(response.data.orderNumber);
             setIsSuccess(true);
             clearCart();
             window.scrollTo(0, 0);
-        }, 2000);
+        } catch (error) {
+            console.error('Failed to create order:', error);
+            alert('Failed to place order. Please try again.');
+        } finally {
+            setIsProcessing(false);
+        }
     };
 
     if (isSuccess) {
@@ -45,11 +99,17 @@ export default function CheckoutPage() {
                     </p>
                     <div className="bg-gray-50 rounded-lg p-4 mb-8 text-left">
                         <p className="text-sm text-gray-500 mb-1">Order Number</p>
-                        <p className="font-mono font-bold text-gray-900">ORD-{Math.floor(Math.random() * 1000000)}</p>
+                        <p className="font-mono font-bold text-gray-900">{orderNumber}</p>
                     </div>
                     <Link
+                        href="/orders"
+                        className="inline-flex items-center justify-center w-full px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors mb-4"
+                    >
+                        View My Orders
+                    </Link>
+                    <Link
                         href="/"
-                        className="inline-flex items-center justify-center w-full px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors"
+                        className="inline-flex items-center justify-center w-full px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-bold hover:bg-gray-200 transition-colors"
                     >
                         Continue Shopping
                     </Link>
@@ -92,27 +152,63 @@ export default function CheckoutPage() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium text-gray-700">First Name</label>
-                                        <input required type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all" />
+                                        <input
+                                            required
+                                            type="text"
+                                            value={formData.firstName}
+                                            onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                        />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium text-gray-700">Last Name</label>
-                                        <input required type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all" />
+                                        <input
+                                            required
+                                            type="text"
+                                            value={formData.lastName}
+                                            onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                        />
                                     </div>
                                     <div className="space-y-2 md:col-span-2">
                                         <label className="text-sm font-medium text-gray-700">Email Address</label>
-                                        <input required type="email" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all" />
+                                        <input
+                                            required
+                                            type="email"
+                                            value={formData.email}
+                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                        />
                                     </div>
                                     <div className="space-y-2 md:col-span-2">
                                         <label className="text-sm font-medium text-gray-700">Street Address</label>
-                                        <input required type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all" />
+                                        <input
+                                            required
+                                            type="text"
+                                            value={formData.address}
+                                            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                        />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium text-gray-700">City</label>
-                                        <input required type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all" />
+                                        <input
+                                            required
+                                            type="text"
+                                            value={formData.city}
+                                            onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                        />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium text-gray-700">Zip Code</label>
-                                        <input required type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all" />
+                                        <input
+                                            required
+                                            type="text"
+                                            value={formData.postalCode}
+                                            onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                        />
                                     </div>
                                 </div>
                             </div>

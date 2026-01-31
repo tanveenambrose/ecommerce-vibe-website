@@ -12,6 +12,8 @@ interface User {
 
 interface AuthContextType {
     user: User | null;
+    token: string | null;
+    login: (token: string, user: User) => void;
     setUser: (user: User | null) => void;
     logout: () => void;
     isAuthenticated: boolean;
@@ -21,16 +23,18 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
+    const [token, setToken] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         // Check localStorage for existing user session
         const storedUser = localStorage.getItem('user');
-        const token = localStorage.getItem('access_token');
+        const storedToken = localStorage.getItem('access_token');
 
-        if (storedUser && token) {
+        if (storedUser && storedToken) {
             try {
                 setUser(JSON.parse(storedUser));
+                setToken(storedToken);
             } catch (error) {
                 console.error('Failed to parse user data', error);
                 localStorage.removeItem('user');
@@ -40,10 +44,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setIsLoading(false);
     }, []);
 
+    const login = (newToken: string, newUser: User) => {
+        localStorage.setItem('access_token', newToken);
+        localStorage.setItem('user', JSON.stringify(newUser));
+        setToken(newToken);
+        setUser(newUser);
+    };
+
     const logout = () => {
         localStorage.removeItem('user');
         localStorage.removeItem('access_token');
         setUser(null);
+        setToken(null);
         window.location.href = '/';
     };
 
@@ -52,7 +64,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        <AuthContext.Provider value={{ user, setUser, logout, isAuthenticated: !!user }}>
+        <AuthContext.Provider value={{ user, token, login, setUser, logout, isAuthenticated: !!user }}>
             {children}
         </AuthContext.Provider>
     );

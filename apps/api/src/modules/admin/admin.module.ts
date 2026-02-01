@@ -6,6 +6,7 @@ import { AdminService } from './admin.service';
 import { User, UserSchema } from '../users/user.schema';
 import { Order, OrderSchema } from '../orders/order.schema';
 import { AuthModule } from '../auth/auth.module';
+import { ProductsModule } from '../products/products.module';
 
 @Module({
     imports: [
@@ -14,6 +15,7 @@ import { AuthModule } from '../auth/auth.module';
             { name: Order.name, schema: OrderSchema },
         ]),
         AuthModule,
+        ProductsModule,
     ],
     controllers: [AdminController, AdminProductsController],
     providers: [AdminService],

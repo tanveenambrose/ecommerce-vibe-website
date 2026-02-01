@@ -1,22 +1,14 @@
 import { Controller, Get, Post, Put, Delete, Patch, Body, Param, UseGuards, Query } from '@nestjs/common';
 import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
+import { ProductsService } from '../products/products.service';
 
-interface Product {
-    id: string;
-    name: string;
-    price: number;
-    category: string;
-    subcategory: string;
-    inStock: boolean;
-    featured?: boolean;
-}
+import { Product } from '../products/product.schema';
 
-// This is a simplified controller for demo purposes
-// In production, you'd have a proper products module with database integration
 
 @Controller('admin/products')
 @UseGuards(AdminAuthGuard)
 export class AdminProductsController {
+    constructor(private readonly productsService: ProductsService) { }
 
     // Get all products for admin with pagination
     @Get()
@@ -25,13 +17,11 @@ export class AdminProductsController {
         @Query('limit') limit?: string,
         @Query('category') category?: string,
     ) {
-        // In real implementation, this would query the database
-        // For now, returning mock response
-        return {
-            message: 'This endpoint requires integration with a products database',
-            note: 'Products are currently managed via static data file',
-            suggestion: 'Consider adding a Products module with MongoDB for dynamic product management'
-        };
+        const query: any = {};
+        if (category) {
+            query.category = { $regex: category, $options: 'i' };
+        }
+        return this.productsService.findAll(query);
     }
 
     // Update product (ADMIN ONLY)
@@ -40,29 +30,19 @@ export class AdminProductsController {
         @Param('id') id: string,
         @Body() updateData: Partial<Product>,
     ) {
-        return {
-            message: 'Product update endpoint (admin only)',
-            productId: id,
-            updateData,
-        };
+        return this.productsService.update(id, updateData);
     }
 
     // Delete product (ADMIN ONLY)
     @Delete(':id')
     async deleteProduct(@Param('id') id: string) {
-        return {
-            message: 'Product delete endpoint (admin only)',
-            productId: id,
-        };
+        return this.productsService.remove(id);
     }
 
     // Create new product (ADMIN ONLY)
     @Post()
     async createProduct(@Body() productData: Product) {
-        return {
-            message: 'Product create endpoint (admin only)',
-            productData,
-        };
+        return this.productsService.create(productData);
     }
 
     // Toggle stock status (ADMIN ONLY)
@@ -71,19 +51,18 @@ export class AdminProductsController {
         @Param('id') id: string,
         @Body('inStock') inStock: boolean,
     ) {
-        return {
-            message: 'Stock toggle endpoint (admin only)',
-            productId: id,
-            inStock,
-        };
+        return this.productsService.updateStock(id);
     }
 
     // Bulk update products (ADMIN ONLY)
     @Post('bulk-update')
     async bulkUpdateProducts(@Body() data: { productIds: string[]; updates: Partial<Product> }) {
+        const results = await Promise.all(
+            data.productIds.map(id => this.productsService.update(id, data.updates))
+        );
         return {
-            message: 'Bulk update endpoint (admin only)',
-            affectedProducts: data.productIds.length,
+            message: 'Bulk update successful',
+            affectedProducts: results.length,
             updates: data.updates,
         };
     }
@@ -91,9 +70,12 @@ export class AdminProductsController {
     // Bulk delete products (ADMIN ONLY)
     @Post('bulk-delete')
     async bulkDeleteProducts(@Body() data: { productIds: string[] }) {
+        const results = await Promise.all(
+            data.productIds.map(id => this.productsService.remove(id))
+        );
         return {
-            message: 'Bulk delete endpoint (admin only)',
-            deletedCount: data.productIds.length,
+            message: 'Bulk delete successful',
+            deletedCount: results.length,
         };
     }
 }

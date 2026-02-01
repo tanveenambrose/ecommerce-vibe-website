@@ -1,36 +1,46 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, CallbackError } from 'mongoose';
+import { Document } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
-// Define interface for User document with methods
 export interface UserDocument extends Document {
-    email: string;
-    password: string;
     firstName: string;
     lastName: string;
+    email: string;
+    password: string;
+    isVerified: boolean;
     role: string;
+    refreshToken?: string;
     comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
 @Schema({ timestamps: true })
 export class User {
+    @Prop({ required: true })
+    firstName: string;
+
+    @Prop({ required: true })
+    lastName: string;
+
     @Prop({ required: true, unique: true })
     email: string;
 
     @Prop({ required: true })
     password: string;
 
-    @Prop({ required: true })
-    firstName: string;
+    @Prop({ default: false })
+    isVerified: boolean;
 
-    @Prop({ required: true })
-    lastName: string;
-
-    @Prop({ default: 'CUSTOMER', enum: ['CUSTOMER', 'ADMIN'] })
+    @Prop({ type: String, enum: ['customer', 'admin'], default: 'customer' })
     role: string;
+
+    @Prop()
+    refreshToken?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+// Index for faster role-based queries
+UserSchema.index({ role: 1 });
 
 // Hash password before saving
 UserSchema.pre('save', async function () {

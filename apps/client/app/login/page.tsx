@@ -39,7 +39,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex">
+        <div className="min-h-screen flex pt-28">
             {/* Left Side - Form */}
             <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white">
                 <div className="max-w-md w-full space-y-8">

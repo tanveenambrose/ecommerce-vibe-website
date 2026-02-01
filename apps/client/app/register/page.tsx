@@ -101,7 +101,7 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen flex">
+        <div className="min-h-screen flex pt-28">
             {/* Left Side - Decorative */}
             <div className="hidden lg:block lg:flex-1 bg-gradient-to-br from-purple-600 to-blue-600 relative overflow-hidden">
                 <div className="absolute inset-0 bg-black/10"></div>

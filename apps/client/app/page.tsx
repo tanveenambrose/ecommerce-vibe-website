@@ -1,6 +1,7 @@
 'use client';
 
 import AnimatedBlobs from '@/components/home/animated-blobs';
+import ParticleBackground from '@/components/home/particle-background';
 import EnhancedNav from '@/components/home/enhanced-nav';
 import HeroSection from '@/components/home/hero-section';
 import FeatureCards from '@/components/home/feature-cards';
@@ -20,6 +21,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-slate-900 overflow-x-hidden">
       <AnimatedBlobs />
+      <ParticleBackground />
       <EnhancedNav />
 
       <HeroSection />

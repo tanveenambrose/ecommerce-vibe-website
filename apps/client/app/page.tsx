@@ -5,6 +5,7 @@ import EnhancedNav from '@/components/home/enhanced-nav';
 import HeroSection from '@/components/home/hero-section';
 import FeatureCards from '@/components/home/feature-cards';
 import ProductCard3D from '@/components/home/product-card-3d';
+import EnhancedFooter from '@/components/home/enhanced-footer';
 import { motion } from 'framer-motion';
 import { Mail } from 'lucide-react';
 
@@ -95,25 +96,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-white/10 py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-white/50 text-sm">
-            © 2024 ShopHub. All rights reserved.
-          </p>
-          <div className="flex gap-6">
-            <a href="#" className="text-white/50 hover:text-white text-sm transition-colors">
-              Privacy
-            </a>
-            <a href="#" className="text-white/50 hover:text-white text-sm transition-colors">
-              Terms
-            </a>
-            <a href="#" className="text-white/50 hover:text-white text-sm transition-colors">
-              Contact
-            </a>
-          </div>
-        </div>
-      </footer>
+      <EnhancedFooter />
     </div>
   );
 }

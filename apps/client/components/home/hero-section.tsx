@@ -53,7 +53,7 @@ export default function HeroSection() {
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
             <FloatingShapes />
 
-            <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div className="relative z-20 text-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

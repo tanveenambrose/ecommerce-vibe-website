@@ -118,7 +118,7 @@ export default function FloatingShapes() {
     return (
         <div
             ref={containerRef}
-            className="absolute inset-0 z-5 pointer-events-none"
+            className="absolute inset-0 z-10 pointer-events-none"
             aria-hidden="true"
         />
     );

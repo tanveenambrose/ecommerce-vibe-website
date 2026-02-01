@@ -37,19 +37,21 @@ export default function CartPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-12">
+        <div className="min-h-screen bg-gray-50 py-6 sm:py-8 lg:py-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h1 className="text-3xl font-bold text-gray-900 mb-8">Shopping Cart ({totalItems} items)</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8">
+                    Shopping Cart ({totalItems} items)
+                </h1>
 
-                <div className="flex flex-col lg:flex-row gap-8">
+                <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
                     {/* Cart Items List */}
-                    <div className="flex-1 space-y-4">
+                    <div className="flex-1 space-y-3 sm:space-y-4">
                         {items.map((item) => (
                             <CartItem key={item.product.id} item={item} />
                         ))}
 
-                        <div className="mt-8 flex justify-between items-center">
-                            <Link href="/" className="text-blue-600 font-medium hover:underline flex items-center gap-2">
+                        <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+                            <Link href="/" className="text-blue-600 font-medium hover:underline flex items-center gap-2 text-sm sm:text-base">
                                 <ArrowLeft className="h-4 w-4" />
                                 Continue Shopping
                             </Link>
@@ -64,7 +66,7 @@ export default function CartPage() {
 
                     {/* Order Summary */}
                     <div className="w-full lg:w-96 flex-shrink-0">
-                        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 sticky top-24">
+                        <div className="bg-white p-5 sm:p-6 rounded-xl shadow-sm border border-gray-100 lg:sticky lg:top-24">
                             <h2 className="text-lg font-bold text-gray-900 mb-6">Order Summary</h2>
 
                             <div className="space-y-4 mb-6">
@@ -82,20 +84,20 @@ export default function CartPage() {
                                 </div>
 
                                 <div className="pt-4 border-t border-gray-100 flex justify-between items-center">
-                                    <span className="text-lg font-bold text-gray-900">Order Total</span>
-                                    <span className="text-2xl font-bold text-blue-600">${total.toFixed(2)}</span>
+                                    <span className="text-base sm:text-lg font-bold text-gray-900">Order Total</span>
+                                    <span className="text-xl sm:text-2xl font-bold text-blue-600">${total.toFixed(2)}</span>
                                 </div>
                             </div>
 
                             <Link
                                 href="/checkout"
-                                className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold text-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+                                className="w-full flex items-center justify-center gap-2 px-5 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold text-base sm:text-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
                             >
                                 Proceed to Checkout
-                                <ArrowRight className="h-5 w-5" />
+                                <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
                             </Link>
 
-                            <p className="mt-4 text-xs text-center text-gray-400">
+                            <p className="mt-3 sm:mt-4 text-xs text-center text-gray-400">
                                 Secure Checkout - SSL Encrypted
                             </p>
                         </div>

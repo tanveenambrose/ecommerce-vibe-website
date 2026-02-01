@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AdminController } from './admin.controller';
+import { AdminProductsController } from './admin-products.controller';
 import { AdminService } from './admin.service';
 import { User, UserSchema } from '../users/user.schema';
 import { Order, OrderSchema } from '../orders/order.schema';
@@ -14,7 +15,7 @@ import { AuthModule } from '../auth/auth.module';
         ]),
         AuthModule,
     ],
-    controllers: [AdminController],
+    controllers: [AdminController, AdminProductsController],
     providers: [AdminService],
     exports: [AdminService],
 })

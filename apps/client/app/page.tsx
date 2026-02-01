@@ -2,7 +2,6 @@
 
 import AnimatedBlobs from '@/components/home/animated-blobs';
 import ParticleBackground from '@/components/home/particle-background';
-import EnhancedNav from '@/components/home/enhanced-nav';
 import HeroSection from '@/components/home/hero-section';
 import FeatureCards from '@/components/home/feature-cards';
 import ProductCard3D from '@/components/home/product-card-3d';
@@ -22,7 +21,6 @@ export default function Home() {
     <div className="min-h-screen bg-slate-900 overflow-x-hidden">
       <AnimatedBlobs />
       <ParticleBackground />
-      <EnhancedNav />
 
       <HeroSection />
 

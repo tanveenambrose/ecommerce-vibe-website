@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Search, Menu, X, User, ChevronDown, Laptop, Shirt, Home as HomeIcon, Sparkles, Baby, LogOut, Package, Settings } from 'lucide-react';
 import Link from 'next/link';
@@ -54,6 +55,10 @@ export default function EnhancedNav() {
     const { items } = useCart();
     const categoriesRef = useRef<HTMLDivElement>(null);
     const profileRef = useRef<HTMLDivElement>(null);
+    const pathname = usePathname();
+
+    // Pages that have a dark background and support transparent navbar
+    const isDarkPage = pathname === '/' || pathname?.startsWith('/category/');
 
     useEffect(() => {
         const handleScroll = () => {
@@ -80,9 +85,12 @@ export default function EnhancedNav() {
 
     const cartItemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
+    // Always show glass background if not on a dark page, or if scrolled
+    const showBackground = scrolled || !isDarkPage;
+
     return (
         <motion.nav
-            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'glass-nav py-3' : 'bg-transparent py-5'
+            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${showBackground ? 'glass-nav py-3 bg-slate-900/80 backdrop-blur-md border-b border-white/10' : 'bg-transparent py-5'
                 }`}
             initial={{ y: -100 }}
             animate={{ y: 0 }}

@@ -55,7 +55,7 @@ export default function AdminDashboard() {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 pt-28 px-4 sm:px-6 lg:px-8 pb-12">
             {/* Header */}
             <div>
                 <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
@@ -156,10 +156,10 @@ export default function AdminDashboard() {
                                         <td className="px-6 py-4">
                                             <span
                                                 className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${order.status === 'completed'
-                                                        ? 'bg-green-100 text-green-700'
-                                                        : order.status === 'pending'
-                                                            ? 'bg-yellow-100 text-yellow-700'
-                                                            : 'bg-red-100 text-red-700'
+                                                    ? 'bg-green-100 text-green-700'
+                                                    : order.status === 'pending'
+                                                        ? 'bg-yellow-100 text-yellow-700'
+                                                        : 'bg-red-100 text-red-700'
                                                     }`}
                                             >
                                                 {order.status}

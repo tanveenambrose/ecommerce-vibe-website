@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import { Navbar } from './navbar';
+import EnhancedNav from './home/enhanced-nav';
 import Footer from './footer';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
@@ -11,7 +12,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
     return (
         <>
-            {!isAdminPage && !isHomePage && <Navbar />}
+            <EnhancedNav />
             {children}
             {!isAdminPage && !isHomePage && <Footer />}
         </>

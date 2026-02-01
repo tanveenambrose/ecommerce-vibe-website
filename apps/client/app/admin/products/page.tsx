@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import api from '@/lib/axios';
+import ProductModal from '@/components/admin/product-modal';
 import {
     Package,
     Edit,
@@ -14,7 +15,9 @@ import {
     MoreVertical,
     CheckCircle,
     XCircle,
-    AlertCircle
+    AlertCircle,
+    ToggleLeft,
+    ToggleRight
 } from 'lucide-react';
 
 interface Product {
@@ -24,8 +27,11 @@ interface Product {
     price: number;
     stock: number;
     inStock: boolean;
+    featured: boolean;
     image?: string;
+    images?: string[];
     description: string;
+    brand: string;
 }
 
 export default function AdminProductsPage() {
@@ -33,6 +39,10 @@ export default function AdminProductsPage() {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('');
+
+    // Modal State
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
     useEffect(() => {
         fetchProducts();
@@ -57,6 +67,25 @@ export default function AdminProductsPage() {
         product.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    // Calculate Stats
+    const totalProducts = products.length;
+    const inStockCount = products.filter(p => p.inStock).length;
+    const outOfStockCount = totalProducts - inStockCount;
+
+    const handleCreate = () => {
+        setEditingProduct(null);
+        setIsModalOpen(true);
+    };
+
+    const handleEdit = (product: Product) => {
+        setEditingProduct(product);
+        setIsModalOpen(true);
+    };
+
+    const handleSave = () => {
+        fetchProducts(); // Refresh list after save
+    };
+
     const handleDelete = async (id: string) => {
         if (confirm('Are you sure you want to delete this product?')) {
             try {
@@ -80,6 +109,13 @@ export default function AdminProductsPage() {
 
     return (
         <div className="space-y-6">
+            <ProductModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onSave={handleSave}
+                product={editingProduct}
+            />
+
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
@@ -87,44 +123,82 @@ export default function AdminProductsPage() {
                     <p className="text-gray-600 mt-1">Manage your product inventory</p>
                 </div>
                 <button
-                    onClick={() => alert('Create Product Modal - Coming Next Step!')}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm"
+                    onClick={handleCreate}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-md"
                 >
                     <Plus className="h-5 w-5" />
                     Add Product
                 </button>
             </div>
 
+            {/* Admin Controls */}
+            <div className="bg-white rounded-xl shadow-md p-6 space-y-4">
+                <h2 className="text-lg font-bold text-gray-900">Admin Controls</h2>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <button className="flex items-center gap-2 px-4 py-3 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors border border-green-200">
+                        <Upload className="h-4 w-4" />
+                        <span className="font-medium">Bulk Import</span>
+                    </button>
+
+                    <button className="flex items-center gap-2 px-4 py-3 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors border border-blue-200">
+                        <Download className="h-4 w-4" />
+                        <span className="font-medium">Export Data</span>
+                    </button>
+
+                    <button className="flex items-center gap-2 px-4 py-3 bg-orange-50 text-orange-700 rounded-lg hover:bg-orange-100 transition-colors border border-orange-200">
+                        <ToggleLeft className="h-4 w-4" />
+                        <span className="font-medium">Bulk Enable</span>
+                    </button>
+
+                    <button className="flex items-center gap-2 px-4 py-3 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors border border-red-200">
+                        <Trash2 className="h-4 w-4" />
+                        <span className="font-medium">Bulk Delete</span>
+                    </button>
+                </div>
+            </div>
+
             {/* Filters & Search */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-                <div className="flex flex-col md:flex-row gap-4">
-                    <div className="flex-1 relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <input
-                            type="text"
-                            placeholder="Search products..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                        />
+            <div className="bg-white rounded-xl shadow-md p-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Search Products</label>
+                        <div className="relative">
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                            <input
+                                type="text"
+                                placeholder="Search by name, SKU, or category..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
+                        </div>
                     </div>
-                    <div className="w-full md:w-48">
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Category Filter</label>
                         <select
                             value={categoryFilter}
                             onChange={(e) => setCategoryFilter(e.target.value)}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         >
                             <option value="">All Categories</option>
                             <option value="electronics">Electronics</option>
                             <option value="fashion">Fashion</option>
                             <option value="home">Home & Garden</option>
+                            <option value="sports">Sports & Outdoors</option>
                         </select>
                     </div>
                 </div>
             </div>
 
             {/* Products Table */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+                <div className="p-6 border-b border-gray-200">
+                    <h2 className="text-lg font-bold text-gray-900">Product Inventory</h2>
+                    <p className="text-sm text-gray-600 mt-1">Manage all products in your catalog.</p>
+                </div>
+
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-sm">
                         <thead className="bg-gray-50 border-b border-gray-200">
@@ -181,7 +255,10 @@ export default function AdminProductsPage() {
                                             </button>
                                         </td>
                                         <td className="px-6 py-4 text-right space-x-2">
-                                            <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                                            <button
+                                                onClick={() => handleEdit(product)}
+                                                className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                            >
                                                 <Edit className="h-4 w-4" />
                                             </button>
                                             <button
@@ -197,6 +274,45 @@ export default function AdminProductsPage() {
                             )}
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+            {/* Products Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-white rounded-xl shadow-md p-6">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm text-gray-600">Total Products</p>
+                            <p className="text-2xl font-bold text-gray-900 mt-1">{totalProducts}</p>
+                        </div>
+                        <div className="p-3 bg-blue-100 rounded-full">
+                            <Package className="h-6 w-6 text-blue-600" />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bg-white rounded-xl shadow-md p-6">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm text-gray-600">In Stock</p>
+                            <p className="text-2xl font-bold text-green-600 mt-1">{inStockCount}</p>
+                        </div>
+                        <div className="p-3 bg-green-100 rounded-full">
+                            <ToggleRight className="h-6 w-6 text-green-600" />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bg-white rounded-xl shadow-md p-6">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm text-gray-600">Out of Stock</p>
+                            <p className="text-2xl font-bold text-red-600 mt-1">{outOfStockCount}</p>
+                        </div>
+                        <div className="p-3 bg-red-100 rounded-full">
+                            <ToggleLeft className="h-6 w-6 text-red-600" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -3,21 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { ProductCard } from '@/components/product-card';
-import api from '@/lib/axios';
+import { getProductsByCategory, Product } from '@/lib/products-data';
 import { motion } from 'framer-motion';
-import { Filter, Grid3x3, List, ChevronDown, X } from 'lucide-react';
+import { Filter, Grid3x3, List, X } from 'lucide-react';
 import AnimatedBlobs from '@/components/home/animated-blobs';
 import ParticleBackground from '@/components/home/particle-background';
-
-interface Product {
-    _id: string;
-    name: string;
-    description: string;
-    price: number;
-    category: string;
-    stock: number;
-    images: string[];
-}
 
 const categoryInfo: Record<string, { title: string; description: string; gradient: string }> = {
     all: {
@@ -25,27 +15,27 @@ const categoryInfo: Record<string, { title: string; description: string; gradien
         description: 'Explore our entire collection of amazing products',
         gradient: 'from-blue-600 to-purple-600',
     },
-    electronics: {
+    'electronics-and-gadgets': {
         title: 'Electronics & Gadgets',
         description: 'Cutting-edge technology at your fingertips',
         gradient: 'from-blue-600 to-cyan-600',
     },
-    fashion: {
+    'fashion-and-apparel': {
         title: 'Fashion & Apparel',
         description: 'Style that speaks volumes',
         gradient: 'from-pink-600 to-rose-600',
     },
-    'home-garden': {
+    'home-and-lifestyle': {
         title: 'Home & Lifestyle',
         description: 'Transform your living space',
         gradient: 'from-green-600 to-emerald-600',
     },
-    'health-beauty': {
+    'health-and-beauty': {
         title: 'Health & Beauty',
         description: 'Beauty and wellness essentials',
         gradient: 'from-purple-600 to-pink-600',
     },
-    'sports-outdoors': {
+    'family-and-hobby': {
         title: 'Family & Hobby',
         description: 'Adventure awaits',
         gradient: 'from-orange-600 to-red-600',
@@ -60,28 +50,18 @@ export default function CategoryPage() {
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [sortBy, setSortBy] = useState<'name' | 'price-asc' | 'price-desc'>('name');
     const [showFilters, setShowFilters] = useState(false);
-    const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
+    const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000]);
 
     useEffect(() => {
         loadProducts();
-    }, [category, sortBy]);
+    }, [category]);
 
-    const loadProducts = async () => {
+    const loadProducts = () => {
         try {
             setLoading(true);
-            const endpoint = category === 'all' ? '/products' : `/products?category=${category}`;
-            const { data } = await api.get(endpoint);
-
-            let sorted = [...data];
-            if (sortBy === 'price-asc') {
-                sorted.sort((a, b) => a.price - b.price);
-            } else if (sortBy === 'price-desc') {
-                sorted.sort((a, b) => b.price - a.price);
-            } else {
-                sorted.sort((a, b) => a.name.localeCompare(b.name));
-            }
-
-            setProducts(sorted);
+            // Use local data instead of API
+            const allProducts = getProductsByCategory(category);
+            setProducts(allProducts);
         } catch (error) {
             console.error('Failed to load products:', error);
         } finally {
@@ -91,9 +71,17 @@ export default function CategoryPage() {
 
     const info = categoryInfo[category] || categoryInfo.all;
 
-    const filteredProducts = products.filter(
-        (product) => product.price >= priceRange[0] && product.price <= priceRange[1]
-    );
+    // Filter and sort products
+    const filteredProducts = products
+        .filter((product) => {
+            const productPrice = product.price || 0;
+            return productPrice >= priceRange[0] && productPrice <= priceRange[1];
+        })
+        .sort((a, b) => {
+            if (sortBy === 'price-asc') return (a.price || 0) - (b.price || 0);
+            if (sortBy === 'price-desc') return (b.price || 0) - (a.price || 0);
+            return a.name.localeCompare(b.name);
+        });
 
     return (
         <div className="min-h-screen bg-slate-900">
@@ -165,8 +153,8 @@ export default function CategoryPage() {
                                 <button
                                     onClick={() => setViewMode('grid')}
                                     className={`p-2 rounded-lg transition-all ${viewMode === 'grid'
-                                        ? 'bg-blue-600 text-white'
-                                        : 'text-white/70 hover:text-white'
+                                            ? 'bg-blue-600 text-white'
+                                            : 'text-white/70 hover:text-white'
                                         }`}
                                 >
                                     <Grid3x3 className="w-5 h-5" />
@@ -174,8 +162,8 @@ export default function CategoryPage() {
                                 <button
                                     onClick={() => setViewMode('list')}
                                     className={`p-2 rounded-lg transition-all ${viewMode === 'list'
-                                        ? 'bg-blue-600 text-white'
-                                        : 'text-white/70 hover:text-white'
+                                            ? 'bg-blue-600 text-white'
+                                            : 'text-white/70 hover:text-white'
                                         }`}
                                 >
                                     <List className="w-5 h-5" />
@@ -197,22 +185,21 @@ export default function CategoryPage() {
                                     <label className="text-white font-medium mb-2 block">
                                         Price Range: ${priceRange[0]} - ${priceRange[1]}
                                     </label>
-                                    <div className="flex gap-4">
+                                    <div className="flex gap-4 items-center">
                                         <input
-                                            type="range"
-                                            min="0"
-                                            max="1000"
+                                            type="number"
                                             value={priceRange[0]}
-                                            onChange={(e) => setPriceRange([parseInt(e.target.value), priceRange[1]])}
-                                            className="flex-1"
+                                            onChange={(e) => setPriceRange([parseInt(e.target.value) || 0, priceRange[1]])}
+                                            className="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white"
+                                            placeholder="Min"
                                         />
+                                        <span className="text-white/50">-</span>
                                         <input
-                                            type="range"
-                                            min="0"
-                                            max="1000"
+                                            type="number"
                                             value={priceRange[1]}
-                                            onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
-                                            className="flex-1"
+                                            onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value) || 5000])}
+                                            className="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white"
+                                            placeholder="Max"
                                         />
                                     </div>
                                 </div>
@@ -245,10 +232,10 @@ export default function CategoryPage() {
                     >
                         {filteredProducts.map((product, index) => (
                             <motion.div
-                                key={product._id}
+                                key={product.id}
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: index * 0.05 }}
+                                transition={{ duration: 0.5, delay: index * 0.02 }}
                             >
                                 <ProductCard product={product} />
                             </motion.div>

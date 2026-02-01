@@ -5,6 +5,7 @@ import { Navbar } from "@/components/navbar";
 import Footer from "@/components/footer";
 import { AuthProvider } from "@/lib/auth-context";
 import { CartProvider } from "@/lib/cart-context";
+import ClientLayout from "@/components/client-layout";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,9 +27,9 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased`} suppressHydrationWarning>
         <AuthProvider>
           <CartProvider>
-            <Navbar />
-            {children}
-            <Footer />
+            <ClientLayout>
+              {children}
+            </ClientLayout>
           </CartProvider>
         </AuthProvider>
       </body>

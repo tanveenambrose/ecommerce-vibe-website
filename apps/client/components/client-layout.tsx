@@ -7,12 +7,13 @@ import Footer from './footer';
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const isAdminPage = pathname?.startsWith('/admin');
+    const isHomePage = pathname === '/';
 
     return (
         <>
-            {!isAdminPage && <Navbar />}
+            {!isAdminPage && !isHomePage && <Navbar />}
             {children}
-            {!isAdminPage && <Footer />}
+            {!isAdminPage && !isHomePage && <Footer />}
         </>
     );
 }

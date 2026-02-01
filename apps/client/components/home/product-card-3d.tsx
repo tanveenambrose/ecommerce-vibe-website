@@ -57,6 +57,26 @@ export default function ProductCard3D({ name, price, color, image }: ProductCard
         >
             {/* Product Image */}
             <div className={`h-48 bg-gradient-to-br from-${color} to-${color}/50 flex items-center justify-center relative overflow-hidden`}>
+                {/* 3D animated icon placeholder */}
+                <motion.div
+                    className="w-24 h-24 bg-white/20 rounded-2xl backdrop-blur-sm flex items-center justify-center"
+                    animate={{
+                        rotateY: [0, 360],
+                        rotateX: [0, 15, 0],
+                        scale: [1, 1.1, 1],
+                    }}
+                    transition={{
+                        duration: 8,
+                        repeat: Infinity,
+                        ease: "linear",
+                    }}
+                    style={{
+                        transformStyle: 'preserve-3d',
+                    }}
+                >
+                    <div className="text-4xl">📦</div>
+                </motion.div>
+
                 {image && (
                     <Image
                         src={image}

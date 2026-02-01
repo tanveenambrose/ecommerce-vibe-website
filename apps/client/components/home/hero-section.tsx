@@ -16,14 +16,38 @@ const rotatingWords = ['Products', 'Deals', 'Styles', 'Gadgets'];
 
 export default function HeroSection() {
     const [currentWordIndex, setCurrentWordIndex] = useState(0);
+    const [displayedText, setDisplayedText] = useState('');
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [typingSpeed, setTypingSpeed] = useState(150);
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentWordIndex((prev) => (prev + 1) % rotatingWords.length);
-        }, 3000);
+        const currentWord = rotatingWords[currentWordIndex];
 
-        return () => clearInterval(interval);
-    }, []);
+        const handleTyping = () => {
+            if (!isDeleting) {
+                // Typing
+                if (displayedText.length < currentWord.length) {
+                    setDisplayedText(currentWord.substring(0, displayedText.length + 1));
+                    setTypingSpeed(150);
+                } else {
+                    // Pause before deleting
+                    setTimeout(() => setIsDeleting(true), 2000);
+                }
+            } else {
+                // Deleting
+                if (displayedText.length > 0) {
+                    setDisplayedText(currentWord.substring(0, displayedText.length - 1));
+                    setTypingSpeed(75);
+                } else {
+                    setIsDeleting(false);
+                    setCurrentWordIndex((prev) => (prev + 1) % rotatingWords.length);
+                }
+            }
+        };
+
+        const timer = setTimeout(handleTyping, typingSpeed);
+        return () => clearTimeout(timer);
+    }, [displayedText, isDeleting, currentWordIndex, typingSpeed]);
 
     return (
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -39,7 +63,8 @@ export default function HeroSection() {
                         Discover Amazing{' '}
                         <span className="relative inline-block">
                             <span className="bg-gradient-to-r from-blue-400 to-purple-400 text-transparent bg-clip-text">
-                                {rotatingWords[currentWordIndex]}
+                                {displayedText}
+                                <span className="inline-block w-1 h-12 md:h-16 bg-blue-400 ml-1 animate-pulse">|</span>
                             </span>
                             <motion.span
                                 className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full"
@@ -48,7 +73,6 @@ export default function HeroSection() {
                                 transition={{ duration: 0.5, delay: 0.3 }}
                             />
                         </span>
-                        <span className="inline-block w-1 h-12 md:h-16 bg-blue-400 ml-2 animate-pulse">|</span>
                     </h1>
 
                     <p className="text-2xl sm:text-3xl md:text-4xl text-white/90 font-light mb-8">

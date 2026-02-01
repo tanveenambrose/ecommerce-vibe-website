@@ -12,7 +12,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
     return (
         <>
-            <EnhancedNav />
+            {!isAdminPage && <EnhancedNav />}
             {children}
             {!isAdminPage && !isHomePage && <Footer />}
         </>

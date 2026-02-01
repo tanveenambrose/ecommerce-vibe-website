@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import { ProductCard } from '@/components/product-card';
 import { getProductsByCategory, products as allProductsData, Product } from '@/lib/products-data';
 import { motion } from 'framer-motion';
-import { Filter, Grid3x3, List, X } from 'lucide-react';
+import { Filter, Grid3x3, List, X, ChevronDown } from 'lucide-react';
 import AnimatedBlobs from '@/components/home/animated-blobs';
 import ParticleBackground from '@/components/home/particle-background';
 
@@ -42,6 +42,9 @@ const categoryInfo: Record<string, { title: string; description: string; gradien
     },
 };
 
+const INITIAL_PRODUCTS = 30;
+const PRODUCTS_PER_PAGE = 20;
+
 export default function CategoryPage() {
     const params = useParams();
     const category = params.category as string;
@@ -51,9 +54,11 @@ export default function CategoryPage() {
     const [sortBy, setSortBy] = useState<'name' | 'price-asc' | 'price-desc'>('name');
     const [showFilters, setShowFilters] = useState(false);
     const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000]);
+    const [visibleCount, setVisibleCount] = useState(INITIAL_PRODUCTS);
 
     useEffect(() => {
         loadProducts();
+        setVisibleCount(INITIAL_PRODUCTS); // Reset pagination when category changes
     }, [category]);
 
     const loadProducts = () => {
@@ -84,6 +89,15 @@ export default function CategoryPage() {
             if (sortBy === 'price-desc') return (b.price || 0) - (a.price || 0);
             return a.name.localeCompare(b.name);
         });
+
+    // Get visible products for pagination
+    const visibleProducts = filteredProducts.slice(0, visibleCount);
+    const hasMoreProducts = visibleCount < filteredProducts.length;
+    const remainingProducts = filteredProducts.length - visibleCount;
+
+    const handleLoadMore = () => {
+        setVisibleCount((prev) => prev + PRODUCTS_PER_PAGE);
+    };
 
     return (
         <div className="min-h-screen bg-slate-900">
@@ -232,7 +246,7 @@ export default function CategoryPage() {
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.5 }}
                     >
-                        {filteredProducts.map((product, index) => (
+                        {visibleProducts.map((product, index) => (
                             <motion.div
                                 key={product.id}
                                 initial={{ opacity: 0, y: 20 }}
@@ -242,6 +256,30 @@ export default function CategoryPage() {
                                 <ProductCard product={product} />
                             </motion.div>
                         ))}
+                    </motion.div>
+                )}
+
+                {/* Show More Button */}
+                {hasMoreProducts && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="mt-12 flex justify-center"
+                    >
+                        <button
+                            onClick={handleLoadMore}
+                            className={`group relative px-8 py-4 bg-gradient-to-r ${info.gradient} rounded-full text-white font-bold text-lg overflow-hidden transition-all hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50`}
+                        >
+                            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                            <div className="relative flex items-center gap-3">
+                                <span>Show More</span>
+                                <span className="px-3 py-1 bg-white/20 rounded-full text-sm">
+                                    {remainingProducts > PRODUCTS_PER_PAGE ? PRODUCTS_PER_PAGE : remainingProducts} more
+                                </span>
+                                <ChevronDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
+                            </div>
+                        </button>
                     </motion.div>
                 )}
             </div>

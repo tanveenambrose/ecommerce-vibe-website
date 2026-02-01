@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import Link from 'next/link';
-import { LayoutDashboard, Package, ShoppingBag, Users, LogOut, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, Users, LogOut, Menu, X, Home } from 'lucide-react';
 import { useState } from 'react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -77,7 +77,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     </nav>
 
                     {/* Footer */}
-                    <div className="p-4 border-t border-gray-200">
+                    <div className="p-4 border-t border-gray-200 space-y-2">
+                        <Link
+                            href="/"
+                            className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors text-gray-700 font-medium w-full"
+                        >
+                            <Home className="h-5 w-5" />
+                            Back to Store
+                        </Link>
                         <button
                             onClick={() => {
                                 logout();

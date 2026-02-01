@@ -7,7 +7,8 @@ export default function FloatingShapes() {
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (!containerRef.current) return;
+        // Only run on client-side
+        if (typeof window === 'undefined' || !containerRef.current) return;
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);

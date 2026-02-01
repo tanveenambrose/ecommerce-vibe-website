@@ -3,8 +3,14 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingBag, ArrowRight } from 'lucide-react';
-import FloatingShapes from './floating-shapes';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+
+// Dynamically import FloatingShapes to avoid SSR issues with Three.js
+const FloatingShapes = dynamic(() => import('./floating-shapes'), {
+    ssr: false,
+    loading: () => <div className="absolute inset-0 z-0" />,
+});
 
 const rotatingWords = ['Products', 'Deals', 'Styles', 'Gadgets'];
 

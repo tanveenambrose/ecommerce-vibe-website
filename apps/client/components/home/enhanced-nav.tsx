@@ -129,7 +129,7 @@ export default function EnhancedNav() {
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: 10 }}
                                         transition={{ duration: 0.2 }}
-                                        className="absolute top-full mt-2 right-0 w-64 glass-card rounded-xl shadow-2xl overflow-hidden"
+                                        className="absolute top-full mt-2 right-0 w-64 bg-slate-800/95 backdrop-blur-xl rounded-xl shadow-2xl border border-white/20 overflow-hidden"
                                     >
                                         {categories.map((category) => {
                                             const Icon = category.icon;
@@ -137,7 +137,7 @@ export default function EnhancedNav() {
                                                 <Link
                                                     key={category.slug}
                                                     href={`/category/${category.slug}`}
-                                                    className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition-colors"
+                                                    className="flex items-center gap-3 px-4 py-3 hover:bg-white/20 transition-colors border-b border-white/10 last:border-0"
                                                     onClick={() => setShowCategories(false)}
                                                 >
                                                     <div className={`p-2 ${category.bgColor} rounded-lg`}>
@@ -149,7 +149,7 @@ export default function EnhancedNav() {
                                         })}
                                         <Link
                                             href="/category/all"
-                                            className="block px-4 py-3 text-center text-blue-400 hover:text-blue-300 font-medium border-t border-white/10"
+                                            className="block px-4 py-3 text-center text-blue-400 hover:text-blue-300 hover:bg-white/10 font-medium border-t border-white/20"
                                             onClick={() => setShowCategories(false)}
                                         >
                                             View All Products
@@ -188,15 +188,15 @@ export default function EnhancedNav() {
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, y: 10 }}
                                             transition={{ duration: 0.2 }}
-                                            className="absolute top-full mt-2 right-0 w-56 glass-card rounded-xl shadow-2xl overflow-hidden"
+                                            className="absolute top-full mt-2 right-0 w-56 bg-slate-800/95 backdrop-blur-xl rounded-xl shadow-2xl border border-white/20 overflow-hidden"
                                         >
-                                            <div className="px-4 py-3 border-b border-white/10">
+                                            <div className="px-4 py-3 border-b border-white/20 bg-gradient-to-r from-blue-600/20 to-purple-600/20">
                                                 <p className="text-white font-semibold">{user.name || 'User'}</p>
                                                 <p className="text-white/60 text-sm truncate">{user.email}</p>
                                             </div>
                                             <Link
                                                 href="/profile"
-                                                className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/10 transition-colors text-white"
+                                                className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/20 transition-colors text-white"
                                                 onClick={() => setShowProfileDropdown(false)}
                                             >
                                                 <User className="w-4 h-4" />
@@ -204,7 +204,7 @@ export default function EnhancedNav() {
                                             </Link>
                                             <Link
                                                 href="/orders"
-                                                className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/10 transition-colors text-white"
+                                                className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/20 transition-colors text-white"
                                                 onClick={() => setShowProfileDropdown(false)}
                                             >
                                                 <Package className="w-4 h-4" />
@@ -213,7 +213,7 @@ export default function EnhancedNav() {
                                             {user.role === 'admin' && (
                                                 <Link
                                                     href="/admin"
-                                                    className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/10 transition-colors text-white"
+                                                    className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/20 transition-colors text-white"
                                                     onClick={() => setShowProfileDropdown(false)}
                                                 >
                                                     <Settings className="w-4 h-4" />
@@ -225,7 +225,7 @@ export default function EnhancedNav() {
                                                     logout();
                                                     setShowProfileDropdown(false);
                                                 }}
-                                                className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-red-500/20 transition-colors text-white border-t border-white/10"
+                                                className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-red-500/30 transition-colors text-white border-t border-white/20"
                                             >
                                                 <LogOut className="w-4 h-4" />
                                                 Logout

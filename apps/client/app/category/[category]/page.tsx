@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { ProductCard } from '@/components/product-card';
-import { getProductsByCategory, Product } from '@/lib/products-data';
+import { getProductsByCategory, products as allProductsData, Product } from '@/lib/products-data';
 import { motion } from 'framer-motion';
 import { Filter, Grid3x3, List, X } from 'lucide-react';
 import AnimatedBlobs from '@/components/home/animated-blobs';
@@ -59,9 +59,11 @@ export default function CategoryPage() {
     const loadProducts = () => {
         try {
             setLoading(true);
-            // Use local data instead of API
-            const allProducts = getProductsByCategory(category);
-            setProducts(allProducts);
+            // Use local data function
+            const categoryProducts = category === 'all'
+                ? allProductsData
+                : getProductsByCategory(category);
+            setProducts(categoryProducts);
         } catch (error) {
             console.error('Failed to load products:', error);
         } finally {
@@ -153,8 +155,8 @@ export default function CategoryPage() {
                                 <button
                                     onClick={() => setViewMode('grid')}
                                     className={`p-2 rounded-lg transition-all ${viewMode === 'grid'
-                                            ? 'bg-blue-600 text-white'
-                                            : 'text-white/70 hover:text-white'
+                                        ? 'bg-blue-600 text-white'
+                                        : 'text-white/70 hover:text-white'
                                         }`}
                                 >
                                     <Grid3x3 className="w-5 h-5" />
@@ -162,8 +164,8 @@ export default function CategoryPage() {
                                 <button
                                     onClick={() => setViewMode('list')}
                                     className={`p-2 rounded-lg transition-all ${viewMode === 'list'
-                                            ? 'bg-blue-600 text-white'
-                                            : 'text-white/70 hover:text-white'
+                                        ? 'bg-blue-600 text-white'
+                                        : 'text-white/70 hover:text-white'
                                         }`}
                                 >
                                     <List className="w-5 h-5" />

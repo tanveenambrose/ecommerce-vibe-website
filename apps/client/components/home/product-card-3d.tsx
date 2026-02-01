@@ -12,6 +12,18 @@ interface ProductCard3DProps {
     image?: string;
 }
 
+// Map color names to complete Tailwind gradient classes
+const colorGradients: Record<string, string> = {
+    'purple-500': 'bg-gradient-to-br from-purple-500 to-purple-500/50',
+    'blue-500': 'bg-gradient-to-br from-blue-500 to-blue-500/50',
+    'indigo-500': 'bg-gradient-to-br from-indigo-500 to-indigo-500/50',
+    'pink-500': 'bg-gradient-to-br from-pink-500 to-pink-500/50',
+    'cyan-500': 'bg-gradient-to-br from-cyan-500 to-cyan-500/50',
+    'rose-500': 'bg-gradient-to-br from-rose-500 to-rose-500/50',
+    'emerald-500': 'bg-gradient-to-br from-emerald-500 to-emerald-500/50',
+    'orange-500': 'bg-gradient-to-br from-orange-500 to-orange-500/50',
+};
+
 export default function ProductCard3D({ name, price, color, image }: ProductCard3DProps) {
     const [rotateX, setRotateX] = useState(0);
     const [rotateY, setRotateY] = useState(0);
@@ -41,6 +53,8 @@ export default function ProductCard3D({ name, price, color, image }: ProductCard
         setIsHovered(false);
     };
 
+    const gradientClass = colorGradients[color] || colorGradients['blue-500'];
+
     return (
         <motion.div
             ref={cardRef}
@@ -56,7 +70,7 @@ export default function ProductCard3D({ name, price, color, image }: ProductCard
             transition={{ duration: 0.3 }}
         >
             {/* Product Image */}
-            <div className={`h-48 bg-gradient-to-br from-${color} to-${color}/50 flex items-center justify-center relative overflow-hidden`}>
+            <div className={`h-48 ${gradientClass} flex items-center justify-center relative overflow-hidden`}>
                 {/* 3D animated icon placeholder */}
                 <motion.div
                     className="w-24 h-24 bg-white/20 rounded-2xl backdrop-blur-sm flex items-center justify-center"

@@ -10,7 +10,15 @@ export class OrdersController {
 
     @Post()
     create(@Req() req, @Body() createOrderDto: CreateOrderDto) {
-        return this.ordersService.create(req.user.userId, createOrderDto);
+        console.log('Received order creation request');
+        console.log('User ID:', req.user.userId);
+        console.log('Order Data:', JSON.stringify(createOrderDto, null, 2));
+
+        return this.ordersService.create(req.user.userId, createOrderDto)
+            .catch(error => {
+                console.error('Order creation failed in controller:', error);
+                throw error;
+            });
     }
 
     @Get()

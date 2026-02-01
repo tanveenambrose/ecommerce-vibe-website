@@ -1,125 +1,69 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import * as THREE from 'three';
+import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+
+const icons = [
+    { src: '/assets/floating/item-3.png', size: 130, initialX: -35, initialY: 20 }, // MacBook
+    { src: '/assets/floating/item-2.png', size: 70, initialX: 30, initialY: -20 }, // iPhone 1
+    { src: '/assets/floating/item-1.png', size: 90, initialX: 40, initialY: -10 }, // Headphones
+    { src: '/assets/floating/item-4.png', size: 70, initialX: -15, initialY: -35 }, // iPhone 2
+    { src: '/assets/floating/item-5.png', size: 80, initialX: 20, initialY: 30 }, // Watch
+    { src: '/assets/floating/item-6.png', size: 90, initialX: -25, initialY: 10 }, // Sunglasses
+    { src: '/assets/floating/item-7.png', size: 140, initialX: 10, initialY: -40 }, // Grocery Bag
+    { src: '/assets/floating/item-8.png', size: 120, initialX: -40, initialY: -15 }, // Sofa
+    { src: '/assets/floating/item-9.png', size: 90, initialX: 45, initialY: 35 }, // Office Chair
+    { src: '/assets/floating/item-10.png', size: 85, initialX: 0, initialY: 40 }, // Sneakers
+];
 
 export default function FloatingShapes() {
-    const containerRef = useRef<HTMLDivElement>(null);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        // Only run on client-side
-        if (typeof window === 'undefined' || !containerRef.current) return;
-
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        containerRef.current.appendChild(renderer.domElement);
-
-        camera.position.z = 10;
-
-        // Lighting
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-        scene.add(ambientLight);
-
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-        directionalLight.position.set(5, 5, 5);
-        scene.add(directionalLight);
-
-        const purpleLight = new THREE.PointLight(0xa855f7, 2, 100);
-        purpleLight.position.set(-5, 5, 5);
-        scene.add(purpleLight);
-
-        // Create metallic material helper
-        const createMetallicMaterial = (color: number) =>
-            new THREE.MeshStandardMaterial({
-                color,
-                metalness: 0.8,
-                roughness: 0.2,
-                emissive: color,
-                emissiveIntensity: 0.2,
-            });
-
-        // Create shapes
-        const torus = new THREE.Mesh(
-            new THREE.TorusGeometry(1, 0.4, 16, 100),
-            createMetallicMaterial(0x6366f1)
-        );
-        torus.position.set(-6, 2, -5);
-
-        const icosahedron = new THREE.Mesh(
-            new THREE.IcosahedronGeometry(1.5, 0),
-            createMetallicMaterial(0xec4899)
-        );
-        icosahedron.position.set(6, -2, -2);
-
-        const sphere = new THREE.Mesh(
-            new THREE.SphereGeometry(1.2, 32, 32),
-            createMetallicMaterial(0x0ea5e9)
-        );
-        sphere.position.set(0, -4, -8);
-
-        const octahedron = new THREE.Mesh(
-            new THREE.OctahedronGeometry(1.3, 0),
-            createMetallicMaterial(0xa855f7)
-        );
-        octahedron.position.set(-4, -5, 0);
-
-        scene.add(torus, icosahedron, sphere, octahedron);
-
-        // Animation
-        let animationFrameId: number;
-        const animate = () => {
-            animationFrameId = requestAnimationFrame(animate);
-
-            const time = Date.now() * 0.001;
-
-            // Rotate shapes
-            torus.rotation.x += 0.01;
-            torus.rotation.y += 0.005;
-            torus.position.y = 2 + Math.sin(time) * 0.5;
-
-            icosahedron.rotation.x += 0.005;
-            icosahedron.rotation.y += 0.01;
-            icosahedron.position.y = -2 + Math.sin(time + 1) * 0.5;
-
-            sphere.rotation.x += 0.003;
-            sphere.rotation.y += 0.007;
-            sphere.position.y = -4 + Math.sin(time + 2) * 0.5;
-
-            octahedron.rotation.x += 0.007;
-            octahedron.rotation.y += 0.003;
-            octahedron.position.y = -5 + Math.sin(time + 3) * 0.5;
-
-            renderer.render(scene, camera);
-        };
-
-        animate();
-
-        // Handle resize
-        const handleResize = () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        };
-
-        window.addEventListener('resize', handleResize);
-
-        return () => {
-            window.removeEventListener('resize', handleResize);
-            cancelAnimationFrame(animationFrameId);
-            containerRef.current?.removeChild(renderer.domElement);
-            renderer.dispose();
-        };
+        setMounted(true);
     }, []);
 
+    if (!mounted) return null;
+
     return (
-        <div
-            ref={containerRef}
-            className="absolute inset-0 z-10 pointer-events-none"
-            aria-hidden="true"
-        />
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+            {icons.map((item, index) => (
+                <FloatingIcon key={index} {...item} index={index} />
+            ))}
+        </div>
+    );
+}
+
+function FloatingIcon({ src, size, initialX, initialY, index }: any) {
+    // Generate random animation parameters for more natural movement
+    const duration = 20 + index * 5;
+    const yOffset = 30 + index * 5;
+    const rotateRange = 5 + index * 3;
+
+    return (
+        <motion.div
+            className="absolute opacity-80"
+            style={{
+                left: `calc(50% + ${initialX}vw)`,
+                top: `calc(50% + ${initialY}vh)`,
+                width: size,
+            }}
+            animate={{
+                y: [-yOffset, yOffset, -yOffset],
+                rotate: [-rotateRange, rotateRange, -rotateRange],
+                scale: [1, 1.05, 1],
+            }}
+            transition={{
+                duration: duration,
+                repeat: Infinity,
+                ease: "easeInOut",
+            }}
+        >
+            <img
+                src={src}
+                alt="Floating element"
+                className="w-full h-auto drop-shadow-2xl"
+            />
+        </motion.div>
     );
 }

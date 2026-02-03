@@ -213,19 +213,31 @@ export function Navbar() {
                             <div className="relative" ref={profileDropdownRef}>
                                 <button
                                     onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 transition-all"
+                                    className="flex items-center gap-1 focus:outline-none"
                                 >
-                                    <UserCircle className="h-5 w-5" />
-                                    <span className="font-medium">{user?.firstName}</span>
+                                    <div className="p-0.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+                                        <div className="w-10 h-10 rounded-xl overflow-hidden border-2 border-white bg-white">
+                                            {user?.profilePicture ? (
+                                                <img
+                                                    src={user.profilePicture}
+                                                    alt="Profile"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full bg-gradient-to-br from-blue-600 to-purple-600 text-white flex items-center justify-center font-bold text-sm uppercase">
+                                                    {user?.firstName?.charAt(0)}{user?.lastName?.slice(-1)}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
                                 </button>
 
                                 {showProfileDropdown && (
-                                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2 animate-fadeIn">
+                                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2 animate-fadeIn z-50">
                                         <div className="px-4 py-3 border-b border-gray-100">
                                             <p className="text-sm font-semibold text-gray-900">
                                                 {user?.firstName} {user?.lastName}
                                             </p>
-                                            <p className="text-xs text-gray-500 truncate">{user?.email}</p>
                                         </div>
 
                                         <Link
@@ -338,10 +350,24 @@ export function Navbar() {
                         {isAuthenticated ? (
                             <>
                                 <div className="px-3 py-2 bg-gray-50 rounded-lg">
-                                    <p className="text-sm font-semibold text-gray-900">
-                                        {user?.firstName} {user?.lastName}
-                                    </p>
-                                    <p className="text-xs text-gray-500">{user?.email}</p>
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-0.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 shadow-md">
+                                            <div className="w-10 h-10 rounded-xl overflow-hidden border-2 border-white bg-white">
+                                                {user?.profilePicture ? (
+                                                    <img src={user.profilePicture} alt="Profile" className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <div className="w-full h-full bg-gradient-to-br from-blue-600 to-purple-600 text-white flex items-center justify-center font-bold text-sm uppercase">
+                                                        {user?.firstName?.charAt(0)}{user?.lastName?.slice(-1)}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-semibold text-gray-900">
+                                                {user?.firstName} {user?.lastName}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                                 <Link
                                     href="/profile"

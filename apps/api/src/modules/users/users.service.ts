@@ -43,6 +43,14 @@ export class UsersService {
     ).exec();
   }
 
+  async updateProfilePicture(userId: string, profilePictureUrl: string) {
+    return this.userModel.findByIdAndUpdate(
+      userId,
+      { profilePicture: profilePictureUrl },
+      { new: true }
+    ).exec();
+  }
+
   async updatePassword(userId: string, newPassword: string) {
     const user = await this.userModel.findById(userId);
     if (!user) {

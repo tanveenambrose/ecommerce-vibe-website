@@ -1,4 +1,5 @@
-import { Controller, Post, Body, Put, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Put, Req, UseGuards, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -29,6 +30,23 @@ export class AuthController {
             firstName: body.firstName,
             lastName: body.lastName,
         });
+    }
+
+    @Post('profile-picture')
+    @UseInterceptors(FileInterceptor('file'))
+    async uploadProfilePicture(
+        @Body() body: { userId: string },
+        @UploadedFile(
+            new ParseFilePipe({
+                validators: [
+                    new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }), // 5MB
+                    new FileTypeValidator({ fileType: '.(png|jpeg|jpg|webp)' }),
+                ],
+            }),
+        )
+        file: Express.Multer.File,
+    ) {
+        return this.authService.uploadProfilePicture(body.userId, file);
     }
 
     @Post('change-password')

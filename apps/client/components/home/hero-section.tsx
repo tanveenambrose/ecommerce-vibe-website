@@ -21,33 +21,36 @@ export default function HeroSection() {
     const [typingSpeed, setTypingSpeed] = useState(150);
 
     useEffect(() => {
+        let timeout: NodeJS.Timeout;
         const currentWord = rotatingWords[currentWordIndex];
 
-        const handleTyping = () => {
-            if (!isDeleting) {
-                // Typing
-                if (displayedText.length < currentWord.length) {
-                    setDisplayedText(currentWord.substring(0, displayedText.length + 1));
-                    setTypingSpeed(150);
-                } else {
-                    // Pause before deleting
-                    setTimeout(() => setIsDeleting(true), 2000);
-                }
-            } else {
-                // Deleting
-                if (displayedText.length > 0) {
+        if (isDeleting) {
+            if (displayedText.length > 0) {
+                // Deleting frames
+                timeout = setTimeout(() => {
                     setDisplayedText(currentWord.substring(0, displayedText.length - 1));
-                    setTypingSpeed(75);
-                } else {
-                    setIsDeleting(false);
-                    setCurrentWordIndex((prev) => (prev + 1) % rotatingWords.length);
-                }
+                }, 50); // Faster delete speed
+            } else {
+                // Done deleting
+                setIsDeleting(false);
+                setCurrentWordIndex((prev) => (prev + 1) % rotatingWords.length);
             }
-        };
+        } else {
+            if (displayedText.length < currentWord.length) {
+                // Typing frames
+                timeout = setTimeout(() => {
+                    setDisplayedText(currentWord.substring(0, displayedText.length + 1));
+                }, 100); // Smooth typing speed
+            } else {
+                // Pause at end of word
+                timeout = setTimeout(() => {
+                    setIsDeleting(true);
+                }, 2000);
+            }
+        }
 
-        const timer = setTimeout(handleTyping, typingSpeed);
-        return () => clearTimeout(timer);
-    }, [displayedText, isDeleting, currentWordIndex, typingSpeed]);
+        return () => clearTimeout(timeout);
+    }, [displayedText, isDeleting, currentWordIndex]);
 
     return (
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden">

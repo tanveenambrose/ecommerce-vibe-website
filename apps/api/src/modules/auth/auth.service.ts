@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UsersService } from '../users/users.service';
 import { EmailService } from '../email/email.service';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { OTP, OTPDocument } from './otp.schema';
@@ -14,6 +15,7 @@ export class AuthService {
         private usersService: UsersService,
         private jwtService: JwtService,
         private emailService: EmailService,
+        private cloudinaryService: CloudinaryService,
         @InjectModel(OTP.name) private otpModel: Model<OTPDocument>,
     ) { }
 
@@ -79,6 +81,7 @@ export class AuthService {
                 firstName: user.firstName,
                 lastName: user.lastName,
                 role: user.role,
+                profilePicture: user.profilePicture,
             },
         };
     }
@@ -110,6 +113,7 @@ export class AuthService {
                 firstName: user.firstName,
                 lastName: user.lastName,
                 role: user.role,
+                profilePicture: user.profilePicture,
             },
         };
     }
@@ -198,5 +202,27 @@ export class AuthService {
         await this.otpModel.deleteOne({ _id: otpRecord._id });
 
         return { message: 'Password reset successfully. Please login with your new password.' };
+    }
+
+    async uploadProfilePicture(userId: string, file: Express.Multer.File) {
+        const result = await this.cloudinaryService.uploadImage(file);
+        const updatedUser = await this.usersService.updateProfilePicture(userId, result.secure_url);
+
+        if (!updatedUser) {
+            throw new BadRequestException('Failed to update profile picture');
+        }
+
+        return {
+            message: 'Profile picture updated successfully',
+            profilePicture: updatedUser.profilePicture,
+            user: {
+                id: updatedUser['_id'].toString(),
+                email: updatedUser.email,
+                firstName: updatedUser.firstName,
+                lastName: updatedUser.lastName,
+                role: updatedUser.role,
+                profilePicture: updatedUser.profilePicture,
+            }
+        };
     }
 }

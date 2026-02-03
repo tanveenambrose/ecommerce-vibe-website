@@ -29,6 +29,9 @@ export default function ProfilePage() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
+    // Upload states
+    const [uploading, setUploading] = useState(false);
+
     useEffect(() => {
         if (!isAuthenticated) {
             router.push('/login');
@@ -42,7 +45,53 @@ export default function ProfilePage() {
         return null;
     }
 
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        // Validate file size (5MB) and type
+        if (file.size > 5 * 1024 * 1024) {
+            setError('File size must be less than 5MB');
+            return;
+        }
+
+        if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+            setError('Only JPEG, PNG, and WebP images are allowed');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('userId', user.id);
+
+        setUploading(true);
+        setError('');
+        setSuccess('');
+
+        try {
+            const response = await api.post('/auth/profile-picture', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            // Update user context and local storage
+            const updatedUser = { ...user, profilePicture: response.data.profilePicture };
+            setUser(updatedUser);
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+
+            setSuccess('Profile picture updated successfully!');
+            setTimeout(() => setSuccess(''), 3000);
+        } catch (err: any) {
+            console.error('Upload failed', err);
+            setError(err.response?.data?.message || 'Failed to upload image');
+        } finally {
+            setUploading(false);
+        }
+    };
+
     const handleUpdateName = async () => {
+        // ... existing handleUpdateName code ...
         if (!firstName.trim() || !lastName.trim()) {
             setError('First name and last name are required');
             return;
@@ -78,6 +127,7 @@ export default function ProfilePage() {
     };
 
     const handleChangePassword = async () => {
+        // ... existing handleChangePassword code ...
         setError('');
         setSuccess('');
 
@@ -138,8 +188,38 @@ export default function ProfilePage() {
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="text-center mb-12">
-                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white text-3xl font-bold mb-4">
-                        {user.firstName.charAt(0)}{user.lastName.charAt(0)}
+                    <div className="relative inline-block group">
+                        <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center mb-4">
+                            {user.profilePicture ? (
+                                <img
+                                    src={user.profilePicture}
+                                    alt="Profile"
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                <div className="text-4xl font-bold text-blue-600 uppercase">
+                                    {user.firstName.charAt(0)}{user.lastName.slice(-1)}
+                                </div>
+                            )}
+                        </div>
+                        <label
+                            htmlFor="profile-upload"
+                            className="absolute bottom-4 right-0 p-2 bg-blue-600 rounded-full text-white cursor-pointer hover:bg-blue-700 transition-colors shadow-md group-hover:scale-110"
+                        >
+                            {uploading ? (
+                                <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" />
+                            ) : (
+                                <Edit2 className="h-5 w-5" />
+                            )}
+                            <input
+                                id="profile-upload"
+                                type="file"
+                                className="hidden"
+                                accept="image/png, image/jpeg, image/webp"
+                                onChange={handleImageUpload}
+                                disabled={uploading}
+                            />
+                        </label>
                     </div>
                     <h1 className="text-4xl font-bold text-gray-900 mb-2">
                         {user.firstName} {user.lastName}

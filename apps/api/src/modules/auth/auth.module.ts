@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { UsersModule } from '../users/users.module';
 import { EmailModule } from '../email/email.module';
+import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { OTP, OTPSchema } from './otp.schema';
 import { JwtStrategy } from './jwt.strategy';
 
@@ -16,6 +17,7 @@ import { JwtStrategy } from './jwt.strategy';
     EmailModule,
     PassportModule,
     ConfigModule,
+    CloudinaryModule,
     MongooseModule.forFeature([{ name: OTP.name, schema: OTPSchema }]),
     JwtModule.registerAsync({
       imports: [ConfigModule],

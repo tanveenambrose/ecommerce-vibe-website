@@ -10,6 +10,7 @@ export interface UserDocument extends Document {
     isVerified: boolean;
     role: string;
     refreshToken?: string;
+    profilePicture?: string;
     comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -32,6 +33,9 @@ export class User {
 
     @Prop({ type: String, enum: ['customer', 'admin'], default: 'customer' })
     role: string;
+
+    @Prop()
+    profilePicture?: string;
 
     @Prop()
     refreshToken?: string;

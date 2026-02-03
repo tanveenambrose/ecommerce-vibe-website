@@ -180,13 +180,21 @@ export default function EnhancedNav() {
                             <div className="relative" ref={profileRef}>
                                 <button
                                     onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                                    className="flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-full transition-all"
+                                    className="p-0.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 shadow-md hover:shadow-lg transition-all transform hover:scale-105"
                                 >
-                                    <div className="w-7 h-7 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                                        <User className="w-4 h-4 text-white" />
+                                    <div className="w-10 h-10 rounded-xl overflow-hidden border-2 border-white bg-white">
+                                        {user?.profilePicture ? (
+                                            <img
+                                                src={user.profilePicture}
+                                                alt="Profile"
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full bg-gradient-to-br from-blue-600 to-purple-600 text-white flex items-center justify-center font-bold text-sm uppercase">
+                                                {user?.firstName?.charAt(0)}{user?.lastName?.slice(-1)}
+                                            </div>
+                                        )}
                                     </div>
-                                    <span className="text-white font-medium max-w-[100px] truncate">{user.name || user.email}</span>
-                                    <ChevronDown className={`w-4 h-4 text-white transition-transform ${showProfileDropdown ? 'rotate-180' : ''}`} />
                                 </button>
 
                                 <AnimatePresence>
@@ -199,7 +207,7 @@ export default function EnhancedNav() {
                                             className="absolute top-full mt-2 right-0 w-56 bg-slate-800/95 backdrop-blur-xl rounded-xl shadow-2xl border border-white/20 overflow-hidden"
                                         >
                                             <div className="px-4 py-3 border-b border-white/20 bg-gradient-to-r from-blue-600/20 to-purple-600/20">
-                                                <p className="text-white font-semibold">{user.name || 'User'}</p>
+                                                <p className="text-white font-semibold">{user.firstName} {user.lastName}</p>
                                                 <p className="text-white/60 text-sm truncate">{user.email}</p>
                                             </div>
                                             <Link
@@ -308,7 +316,7 @@ export default function EnhancedNav() {
                                 {user ? (
                                     <>
                                         <div className="border-t border-white/10 pt-4">
-                                            <p className="text-white font-semibold mb-1">{user.name || 'User'}</p>
+                                            <p className="text-white font-semibold mb-1">{user.firstName} {user.lastName}</p>
                                             <p className="text-white/60 text-sm mb-3">{user.email}</p>
                                         </div>
                                         <Link href="/profile" className="text-white font-medium" onClick={() => setMobileMenuOpen(false)}>
